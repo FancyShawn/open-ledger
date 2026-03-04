@@ -1,0 +1,828 @@
+[
+  {
+    "id": "a669fb21-9d26-4673-af03-4f8a42e25283",
+    "name": "(特约)雪球基金（权益基金理 财） → Xueqiu",
+    "priority": 100,
+    "enabled": true,
+    "conditions": {
+      "counterparty": {
+        "type": "contains",
+        "pattern": "(特约)雪球基金（权益基金理 财）"
+      }
+    },
+    "targetAccount": "Assets:Investment:Fund:Xueqiu",
+    "createdBy": "user"
+  },
+  {
+    "id": "519f2e8b-5d2a-44c2-9ad5-e25876ca1363",
+    "name": "/ → 1526",
+    "priority": 100,
+    "enabled": true,
+    "conditions": {
+      "counterparty": {
+        "type": "contains",
+        "pattern": "/"
+      }
+    },
+    "targetAccount": "Assets:CMB:Savings:1526",
+    "createdBy": "user"
+  },
+  {
+    "id": "00e5fce9-6a05-4752-9934-d625c5676349",
+    "name": "AAA亲亲么么木马丢丢可爱小宝贝 → Living",
+    "priority": 100,
+    "enabled": true,
+    "conditions": {
+      "counterparty": {
+        "type": "contains",
+        "pattern": "AAA亲亲么么木马丢丢可爱小宝贝"
+      }
+    },
+    "targetAccount": "Expenses:Living",
+    "createdBy": "user"
+  },
+  {
+    "id": "93592785-f718-4510-bd9b-41d5a3b5189a",
+    "name": "NZERO洗护 → Living",
+    "priority": 100,
+    "enabled": true,
+    "conditions": {
+      "counterparty": {
+        "type": "contains",
+        "pattern": "NZERO洗护"
+      }
+    },
+    "targetAccount": "Expenses:Living",
+    "createdBy": "ai"
+  },
+  {
+    "id": "415dabe1-ea98-4e54-98f3-f530586ab23a",
+    "name": "cm**8 → Growing",
+    "priority": 100,
+    "enabled": true,
+    "conditions": {
+      "counterparty": {
+        "type": "contains",
+        "pattern": "cm**8"
+      }
+    },
+    "targetAccount": "Expenses:Growing",
+    "createdBy": "ai"
+  },
+  {
+    "id": "654a9918-ff74-4cc9-856f-f0451bae722a",
+    "name": "luckin coffee → Living",
+    "priority": 200,
+    "enabled": true,
+    "conditions": {
+      "counterparty": {
+        "type": "contains",
+        "pattern": "luckin coffee"
+      }
+    },
+    "targetAccount": "Expenses:Living",
+    "createdBy": "user"
+  },
+  {
+    "id": "73037e48-a6f3-4aea-8c3b-6ee8947bd70e",
+    "name": "t***3 → Growing",
+    "priority": 100,
+    "enabled": true,
+    "conditions": {
+      "counterparty": {
+        "type": "contains",
+        "pattern": "t***3"
+      }
+    },
+    "targetAccount": "Expenses:Growing",
+    "createdBy": "ai"
+  },
+  {
+    "id": "02b48c94-0aa6-42eb-aaa1-d2e628eaeddd",
+    "name": "tb**0 → Growing",
+    "priority": 100,
+    "enabled": true,
+    "conditions": {
+      "counterparty": {
+        "type": "contains",
+        "pattern": "tb**0"
+      }
+    },
+    "targetAccount": "Expenses:Growing",
+    "createdBy": "ai"
+  },
+  {
+    "id": "98fa8d39-c011-4953-b3d1-e71be2e29d49",
+    "name": "tb**7 → Growing",
+    "priority": 100,
+    "enabled": true,
+    "conditions": {
+      "counterparty": {
+        "type": "contains",
+        "pattern": "tb**7"
+      }
+    },
+    "targetAccount": "Expenses:Growing",
+    "createdBy": "ai"
+  },
+  {
+    "id": "c21de9d9-3719-4c16-b177-463b2a810ca5",
+    "name": "七鲜 → Living",
+    "priority": 200,
+    "enabled": true,
+    "conditions": {
+      "counterparty": {
+        "type": "contains",
+        "pattern": "七鲜"
+      }
+    },
+    "targetAccount": "Expenses:Living",
+    "createdBy": "user"
+  },
+  {
+    "id": "08b3eb49-8b18-4649-ab15-5404f306045d",
+    "name": "七鲜超市 → Living",
+    "priority": 200,
+    "enabled": true,
+    "conditions": {
+      "counterparty": {
+        "type": "contains",
+        "pattern": "七鲜超市"
+      }
+    },
+    "targetAccount": "Expenses:Living",
+    "createdBy": "user"
+  },
+  {
+    "id": "2283f753-88c3-4c4f-a3eb-0e8d89091451",
+    "name": "上海麦德龙商贸有限公司 → Living",
+    "priority": 100,
+    "enabled": true,
+    "conditions": {
+      "counterparty": {
+        "type": "contains",
+        "pattern": "上海麦德龙商贸有限公司"
+      }
+    },
+    "targetAccount": "Expenses:Living",
+    "createdBy": "user"
+  },
+  {
+    "id": "a8a46e31-8d43-436e-a62a-fe3b47ea70d8",
+    "name": "京东七鲜超市 → 本地生活",
+    "priority": 100,
+    "enabled": true,
+    "conditions": {
+      "counterparty": {
+        "type": "contains",
+        "pattern": "京东七鲜超市"
+      }
+    },
+    "targetAccount": "Expenses:Living",
+    "createdBy": "user"
+  },
+  {
+    "id": "rule-jd-baitiao-repay",
+    "name": "京东白条还款",
+    "priority": 250,
+    "enabled": true,
+    "conditions": {
+      "counterparty": {
+        "type": "contains",
+        "pattern": "京东白条及金条"
+      }
+    },
+    "targetAccount": "Liabilities:JDBaiTiao",
+    "createdBy": "system"
+  },
+  {
+    "id": "a9c24d18-cf7b-4efb-a45c-346128289bf6",
+    "name": "京东白条及金条业务网银平台 → JDBaiTiao",
+    "priority": 100,
+    "enabled": true,
+    "conditions": {
+      "counterparty": {
+        "type": "contains",
+        "pattern": "京东白条及金条业务网银平台"
+      }
+    },
+    "targetAccount": "Liabilities:JDBaiTiao",
+    "createdBy": "user"
+  },
+  {
+    "id": "df98aadd-83e0-4b49-a24d-5e2838042b1a",
+    "name": "代发住房公积金 北京住房公积金管理中心 → 1526",
+    "priority": 100,
+    "enabled": true,
+    "conditions": {
+      "counterparty": {
+        "type": "contains",
+        "pattern": "代发住房公积金 北京住房公积金管理中心"
+      }
+    },
+    "targetAccount": "Assets:CMB:Savings:1526",
+    "createdBy": "user"
+  },
+  {
+    "id": "rule-huabei-repay",
+    "name": "花呗还款",
+    "priority": 250,
+    "enabled": true,
+    "conditions": {
+      "counterparty": {
+        "type": "contains",
+        "pattern": "信贷业务待还款"
+      }
+    },
+    "targetAccount": "Liabilities:Huabei",
+    "createdBy": "system"
+  },
+  {
+    "id": "rule-dividend",
+    "name": "投资分红",
+    "priority": 200,
+    "enabled": true,
+    "conditions": {
+      "description": {
+        "type": "contains",
+        "pattern": "分红"
+      }
+    },
+    "targetAccount": "Income:Investment:Dividend",
+    "createdBy": "system"
+  },
+  {
+    "id": "3bdd3ccf-3efb-41a9-bc6f-82eb332972dc",
+    "name": "分红 兴银理财有限责任公司 → 1526",
+    "priority": 100,
+    "enabled": true,
+    "conditions": {
+      "counterparty": {
+        "type": "contains",
+        "pattern": "分红 兴银理财有限责任公司"
+      }
+    },
+    "targetAccount": "Assets:CMB:Savings:1526",
+    "createdBy": "user"
+  },
+  {
+    "id": "c9fe7eaa-596a-4b90-ab90-b253cc7c2f40",
+    "name": "北京一卡通 → Transport",
+    "priority": 200,
+    "enabled": true,
+    "conditions": {
+      "counterparty": {
+        "type": "contains",
+        "pattern": "北京一卡通"
+      }
+    },
+    "targetAccount": "Expenses:Transport",
+    "createdBy": "user"
+  },
+  {
+    "id": "ba3de309-ac3d-4ed0-aaa5-0461376529c5",
+    "name": "北京悟空出行科技有限公司 → Travels",
+    "priority": 100,
+    "enabled": true,
+    "conditions": {
+      "counterparty": {
+        "type": "contains",
+        "pattern": "北京悟空出行科技有限公司"
+      }
+    },
+    "targetAccount": "Expenses:Travels",
+    "createdBy": "user"
+  },
+  {
+    "id": "f6d73942-1de8-4bd2-be4b-e582602213fb",
+    "name": "北京紫气羊来餐饮管理有限责任公司 → Living",
+    "priority": 200,
+    "enabled": true,
+    "conditions": {
+      "counterparty": {
+        "type": "contains",
+        "pattern": "北京紫气羊来餐饮管理有限责任公司"
+      }
+    },
+    "targetAccount": "Expenses:Living",
+    "createdBy": "user"
+  },
+  {
+    "id": "eea2c57f-290b-462c-88ac-b0cb572735fa",
+    "name": "北京美餐好客科技有限公司朝阳第一分公司 → Living",
+    "priority": 200,
+    "enabled": true,
+    "conditions": {
+      "counterparty": {
+        "type": "contains",
+        "pattern": "北京美餐好客科技有限公司朝阳第一分公司"
+      }
+    },
+    "targetAccount": "Expenses:Living",
+    "createdBy": "user"
+  },
+  {
+    "id": "1ab6b880-43f5-400a-a8a9-c2837e4cf322",
+    "name": "北京雪球基金销售有限公司 → Xueqiu",
+    "priority": 100,
+    "enabled": true,
+    "conditions": {
+      "counterparty": {
+        "type": "contains",
+        "pattern": "北京雪球基金销售有限公司"
+      }
+    },
+    "targetAccount": "Assets:Investment:Fund:Xueqiu",
+    "createdBy": "user"
+  },
+  {
+    "id": "a1304be0-89a5-4f02-bc9f-77eb9ba46c55",
+    "name": "北京雪球基金销售有限公司  110918749610505  ————————————————————————————————————————————————————— 温馨提示： 1.交易流水验真：进入一网通首页（www.cmbchina.com）点击“在线服务-交易流水验真”进入页面正确录入“基本项” 和“明细项”信息，点击“查询”提交系统验真。 → Xueqiu",
+    "priority": 100,
+    "enabled": true,
+    "conditions": {
+      "counterparty": {
+        "type": "contains",
+        "pattern": "北京雪球基金销售有限公司  110918749610505  ————————————————————————————————————————————————————— 温馨提示： 1.交易流水验真：进入一网通首页（www.cmbchina.com）点击“在线服务-交易流水验真”进入页面正确录入“基本项” 和“明细项”信息，点击“查询”提交系统验真。"
+      }
+    },
+    "targetAccount": "Assets:Investment:Fund:Xueqiu",
+    "createdBy": "user"
+  },
+  {
+    "id": "1247723a-8062-4edb-83da-3c513ca2380b",
+    "name": "北京高德云图科技有限公司  110926114410802 合并统计合并收入(+)合并支出(-) 币种 CNY31,435.25-30,794.90 → 1526",
+    "priority": 100,
+    "enabled": true,
+    "conditions": {
+      "counterparty": {
+        "type": "contains",
+        "pattern": "北京高德云图科技有限公司  110926114410802 合并统计合并收入(+)合并支出(-) 币种 CNY31,435.25-30,794.90"
+      }
+    },
+    "targetAccount": "Assets:CMB:Savings:1526",
+    "createdBy": "user"
+  },
+  {
+    "id": "bdc082de-97e2-42b8-a782-19e2bf0455d6",
+    "name": "奶东318充电桩 → Transport",
+    "priority": 200,
+    "enabled": true,
+    "conditions": {
+      "counterparty": {
+        "type": "contains",
+        "pattern": "奶东318充电桩"
+      }
+    },
+    "targetAccount": "Expenses:Transport",
+    "createdBy": "user"
+  },
+  {
+    "id": "efa1a0f1-a1ae-4128-b389-f5bbf0a534fd",
+    "name": "好特卖HotMaxx → Living",
+    "priority": 200,
+    "enabled": true,
+    "conditions": {
+      "counterparty": {
+        "type": "contains",
+        "pattern": "好特卖HotMaxx"
+      }
+    },
+    "targetAccount": "Expenses:Living",
+    "createdBy": "user"
+  },
+  {
+    "id": "4ab97c6e-1677-44d6-8589-7e80dffb5359",
+    "name": "宝贝 → Living",
+    "priority": 100,
+    "enabled": true,
+    "conditions": {
+      "counterparty": {
+        "type": "contains",
+        "pattern": "宝贝"
+      }
+    },
+    "targetAccount": "Expenses:Living",
+    "createdBy": "user"
+  },
+  {
+    "id": "c2a5e6ef-1b76-42a7-a57c-27c3c2a21020",
+    "name": "应付利息-应付个人活期存款利 息(自动计提)（新) → 1526",
+    "priority": 100,
+    "enabled": true,
+    "conditions": {
+      "counterparty": {
+        "type": "contains",
+        "pattern": "应付利息-应付个人活期存款利 息(自动计提)（新)"
+      }
+    },
+    "targetAccount": "Assets:CMB:Savings:1526",
+    "createdBy": "user"
+  },
+  {
+    "id": "f2da4134-c0ce-458f-84e8-977bec0f91bd",
+    "name": "微信红包 → SoftwarePlatformMarketing",
+    "priority": 100,
+    "enabled": true,
+    "conditions": {
+      "counterparty": {
+        "type": "contains",
+        "pattern": "微信红包"
+      }
+    },
+    "targetAccount": "Income:SoftwarePlatformMarketing",
+    "createdBy": "user"
+  },
+  {
+    "id": "39967901-e5d0-4d6a-a88f-9c1ac7d81411",
+    "name": "微信转账 → Gift",
+    "priority": 100,
+    "enabled": true,
+    "conditions": {
+      "counterparty": {
+        "type": "contains",
+        "pattern": "微信转账"
+      }
+    },
+    "targetAccount": "Expenses:Transfer:Gift",
+    "createdBy": "ai"
+  },
+  {
+    "id": "33441255-762a-4577-aff7-61c6b1d2a88c",
+    "name": "打开拼多多，领更多现金红包 → WeChat",
+    "priority": 100,
+    "enabled": true,
+    "conditions": {
+      "counterparty": {
+        "type": "contains",
+        "pattern": "打开拼多多，领更多现金红包"
+      }
+    },
+    "targetAccount": "Assets:WeChat",
+    "createdBy": "user"
+  },
+  {
+    "id": "460fa116-6adc-4099-bfbe-56214cc4ae3f",
+    "name": "拼多多平台商户 → Living",
+    "priority": 100,
+    "enabled": true,
+    "conditions": {
+      "counterparty": {
+        "type": "contains",
+        "pattern": "拼多多平台商户"
+      }
+    },
+    "targetAccount": "Expenses:Living",
+    "createdBy": "ai"
+  },
+  {
+    "id": "ac3eb45d-3c24-48e6-9be5-2fb93d8264e6",
+    "name": "支付宝信贷业务待还款账户 → Huabei",
+    "priority": 100,
+    "enabled": true,
+    "conditions": {
+      "counterparty": {
+        "type": "contains",
+        "pattern": "支付宝信贷业务待还款账户"
+      }
+    },
+    "targetAccount": "Liabilities:Huabei",
+    "createdBy": "user"
+  },
+  {
+    "id": "793bbe32-5184-4382-9c30-497defc4993c",
+    "name": "新发地菜篮子直营店 → Living",
+    "priority": 200,
+    "enabled": true,
+    "conditions": {
+      "counterparty": {
+        "type": "contains",
+        "pattern": "新发地菜篮子直营店"
+      }
+    },
+    "targetAccount": "Expenses:Living",
+    "createdBy": "user"
+  },
+  {
+    "id": "rule-chaochaobao",
+    "name": "招行朝朝宝",
+    "priority": 200,
+    "enabled": true,
+    "conditions": {
+      "description": {
+        "type": "contains",
+        "pattern": "朝朝宝"
+      }
+    },
+    "targetAccount": "Assets:CMB:ZhaoZhaoBao",
+    "createdBy": "user"
+  },
+  {
+    "id": "c0344945-e7aa-4c78-8639-c14fac7789ff",
+    "name": "朝朝宝转入 招银理财有限责任公司 → ZhaoZhaoBao",
+    "priority": 100,
+    "enabled": true,
+    "conditions": {
+      "counterparty": {
+        "type": "contains",
+        "pattern": "朝朝宝转入 招银理财有限责任公司"
+      }
+    },
+    "targetAccount": "Assets:CMB:ZhaoZhaoBao",
+    "createdBy": "user"
+  },
+  {
+    "id": "c190419d-8af1-4293-8bf9-7ec5f3661964",
+    "name": "朝朝宝转出 待清算电子汇差-代销理财快赎 投资 → 1526",
+    "priority": 100,
+    "enabled": true,
+    "conditions": {
+      "counterparty": {
+        "type": "contains",
+        "pattern": "朝朝宝转出 待清算电子汇差-代销理财快赎 投资"
+      }
+    },
+    "targetAccount": "Assets:CMB:Savings:1526",
+    "createdBy": "user"
+  },
+  {
+    "id": "b5f59164-e8b0-4e8a-9930-bad606fc3304",
+    "name": "浙江天猫技术有限公司 → Target",
+    "priority": 100,
+    "enabled": true,
+    "conditions": {
+      "counterparty": {
+        "type": "contains",
+        "pattern": "浙江天猫技术有限公司"
+      }
+    },
+    "targetAccount": "Unknown:Target",
+    "createdBy": "user"
+  },
+  {
+    "id": "725a5b80-f267-4c32-9bab-fdb7ee3c63c1",
+    "name": "海南海航航空销售有限公司 → Travels",
+    "priority": 100,
+    "enabled": true,
+    "conditions": {
+      "counterparty": {
+        "type": "contains",
+        "pattern": "海南海航航空销售有限公司"
+      }
+    },
+    "targetAccount": "Expenses:Travels",
+    "createdBy": "user"
+  },
+  {
+    "id": "ea75b2cc-2404-42ab-9ef2-0bbfe1f7fa15",
+    "name": "海南航空控股股份有限公司 → Travels",
+    "priority": 100,
+    "enabled": true,
+    "conditions": {
+      "counterparty": {
+        "type": "contains",
+        "pattern": "海南航空控股股份有限公司"
+      }
+    },
+    "targetAccount": "Expenses:Travels",
+    "createdBy": "user"
+  },
+  {
+    "id": "34362ebd-8efe-4db8-9d10-de06fe425270",
+    "name": "淘宝闪购 → Living",
+    "priority": 200,
+    "enabled": true,
+    "conditions": {
+      "counterparty": {
+        "type": "contains",
+        "pattern": "淘宝闪购"
+      }
+    },
+    "targetAccount": "Expenses:Living",
+    "createdBy": "user"
+  },
+  {
+    "id": "rule-fund-tencent",
+    "name": "理财通基金",
+    "priority": 200,
+    "enabled": true,
+    "conditions": {
+      "counterparty": {
+        "type": "contains",
+        "pattern": "理财通"
+      }
+    },
+    "targetAccount": "Assets:Investment:Fund:Tencent",
+    "createdBy": "system"
+  },
+  {
+    "id": "cfe309a4-5ac2-4963-896d-165fe7c0b06c",
+    "name": "理财通-腾安基金销售（深圳） 有限公司 → Tencent",
+    "priority": 100,
+    "enabled": true,
+    "conditions": {
+      "counterparty": {
+        "type": "contains",
+        "pattern": "理财通-腾安基金销售（深圳） 有限公司"
+      }
+    },
+    "targetAccount": "Assets:Investment:Fund:Tencent",
+    "createdBy": "user"
+  },
+  {
+    "id": "5a769374-0708-4bfd-81ac-1285d4cd8450",
+    "name": "生活超市奶东店 → Living",
+    "priority": 200,
+    "enabled": true,
+    "conditions": {
+      "counterparty": {
+        "type": "contains",
+        "pattern": "生活超市奶东店"
+      }
+    },
+    "targetAccount": "Expenses:Living",
+    "createdBy": "user"
+  },
+  {
+    "id": "e64169e3-cd5a-4d41-be14-2fc81f448871",
+    "name": "盒马 → Living",
+    "priority": 200,
+    "enabled": true,
+    "conditions": {
+      "counterparty": {
+        "type": "contains",
+        "pattern": "盒马"
+      }
+    },
+    "targetAccount": "Expenses:Living",
+    "createdBy": "user"
+  },
+  {
+    "id": "rule-platform-reward",
+    "name": "平台奖励红包",
+    "priority": 250,
+    "enabled": true,
+    "conditions": {
+      "counterparty": {
+        "type": "contains",
+        "pattern": "红包"
+      }
+    },
+    "targetAccount": "Income:SoftwarePlatformMarketing",
+    "createdBy": "system"
+  },
+  {
+    "id": "8290a39e-a275-4c3c-a1ca-f0b4518a2dfb",
+    "name": "美团 → Living",
+    "priority": 100,
+    "enabled": true,
+    "conditions": {
+      "counterparty": {
+        "type": "contains",
+        "pattern": "美团"
+      }
+    },
+    "targetAccount": "Expenses:Living",
+    "createdBy": "ai"
+  },
+  {
+    "id": "dffbb3a5-2f2e-4479-b83b-11c8e169ab5e",
+    "name": "美团金融服务 → Living",
+    "priority": 100,
+    "enabled": true,
+    "conditions": {
+      "counterparty": {
+        "type": "contains",
+        "pattern": "美团金融服务"
+      }
+    },
+    "targetAccount": "Expenses:Living",
+    "createdBy": "user"
+  },
+  {
+    "id": "rule-fund-tengan",
+    "name": "腾安基金销售",
+    "priority": 200,
+    "enabled": true,
+    "conditions": {
+      "counterparty": {
+        "type": "contains",
+        "pattern": "腾安基金"
+      }
+    },
+    "targetAccount": "Assets:Investment:Fund:Tencent",
+    "createdBy": "system"
+  },
+  {
+    "id": "rule-fund-alipay",
+    "name": "蚂蚁基金销售",
+    "priority": 200,
+    "enabled": true,
+    "conditions": {
+      "counterparty": {
+        "type": "contains",
+        "pattern": "蚂蚁"
+      }
+    },
+    "targetAccount": "Assets:Investment:Fund:Alipay",
+    "createdBy": "system"
+  },
+  {
+    "id": "dff84e8c-767b-4f3b-ab77-d058ad50e980",
+    "name": "蚂蚁（杭州）基金销售有限公 司 → Alipay",
+    "priority": 100,
+    "enabled": true,
+    "conditions": {
+      "counterparty": {
+        "type": "contains",
+        "pattern": "蚂蚁（杭州）基金销售有限公 司"
+      }
+    },
+    "targetAccount": "Assets:Investment:Fund:Alipay",
+    "createdBy": "user"
+  },
+  {
+    "id": "rule-transfer-family",
+    "name": "微信转账 → 家庭",
+    "priority": 150,
+    "enabled": true,
+    "conditions": {
+      "paymentMethod": {
+        "type": "contains",
+        "pattern": "转账"
+      }
+    },
+    "targetAccount": "Expenses:Transfer:Family",
+    "createdBy": "system"
+  },
+  {
+    "id": "rule-fund-xueqiu",
+    "name": "雪球基金",
+    "priority": 200,
+    "enabled": true,
+    "conditions": {
+      "counterparty": {
+        "type": "contains",
+        "pattern": "雪球基金"
+      }
+    },
+    "targetAccount": "Assets:Investment:Fund:Xueqiu",
+    "createdBy": "system"
+  },
+  {
+    "id": "e90ba73e-adc7-4d44-ae8a-5c6442d898a2",
+    "name": "高德打车 → Transport",
+    "priority": 200,
+    "enabled": true,
+    "conditions": {
+      "counterparty": {
+        "type": "contains",
+        "pattern": "高德打车"
+      }
+    },
+    "targetAccount": "Expenses:Transport",
+    "createdBy": "user"
+  },
+  {
+    "id": "d97fa41b-a3cb-4065-9739-56203036e356",
+    "name": "麦当劳 → Living",
+    "priority": 200,
+    "enabled": true,
+    "conditions": {
+      "counterparty": {
+        "type": "contains",
+        "pattern": "麦当劳"
+      }
+    },
+    "targetAccount": "Expenses:Living",
+    "createdBy": "user"
+  },
+  {
+    "id": "c8b754ee-8c2c-4948-9499-1181d59f510d",
+    "name": "麦德龙 → 本地生活",
+    "priority": 100,
+    "enabled": true,
+    "conditions": {
+      "counterparty": {
+        "type": "contains",
+        "pattern": "麦德龙"
+      }
+    },
+    "targetAccount": "Expenses:Living",
+    "createdBy": "user"
+  },
+  {
+    "id": "0032c04a-6cee-4ae6-9a57-4bdb6baa673a",
+    "name": "（特约）北京雪球基金销售有限 公司 → Xueqiu",
+    "priority": 100,
+    "enabled": true,
+    "conditions": {
+      "counterparty": {
+        "type": "contains",
+        "pattern": "（特约）北京雪球基金销售有限 公司"
+      }
+    },
+    "targetAccount": "Assets:Investment:Fund:Xueqiu",
+    "createdBy": "user"
+  }
+]

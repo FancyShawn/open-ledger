@@ -1,0 +1,226 @@
+[
+  {
+    "id": "acc-alipay",
+    "type": "Assets",
+    "name": "支付宝余额",
+    "path": "Assets:Shawn:Alipay",
+    "currency": "CNY"
+  },
+  {
+    "id": "acc-wechat",
+    "type": "Assets",
+    "name": "微信零钱",
+    "path": "Assets:Shawn:WeChat",
+    "currency": "CNY"
+  },
+  {
+    "id": "acc-cmb-savings",
+    "type": "Assets",
+    "name": "招商储蓄卡(1526)",
+    "path": "Assets:Shawn:CMB:Savings:1526",
+    "currency": "CNY"
+  },
+  {
+    "id": "acc-cmb-chaochaobao",
+    "type": "Assets",
+    "name": "招行朝朝宝",
+    "path": "Assets:Shawn:CMB:ZhaoZhaoBao",
+    "currency": "CNY"
+  },
+  {
+    "id": "acc-fund-tencent",
+    "type": "Assets",
+    "name": "理财通基金",
+    "path": "Assets:Shawn:Investment:Fund:Tencent",
+    "currency": "CNY"
+  },
+  {
+    "id": "acc-fund-xueqiu",
+    "type": "Assets",
+    "name": "雪球基金",
+    "path": "Assets:Shawn:Investment:Fund:Xueqiu",
+    "currency": "CNY"
+  },
+  {
+    "id": "acc-fund-alipay",
+    "type": "Assets",
+    "name": "支付宝基金",
+    "path": "Assets:Shawn:Investment:Fund:Alipay",
+    "currency": "CNY"
+  },
+  {
+    "id": "acc-huabei",
+    "type": "Liabilities",
+    "name": "蚂蚁花呗",
+    "path": "Liabilities:Shawn:Huabei",
+    "currency": "CNY"
+  },
+  {
+    "id": "acc-jd-baitiao",
+    "type": "Liabilities",
+    "name": "京东白条",
+    "path": "Liabilities:Shawn:JDBaiTiao",
+    "currency": "CNY"
+  },
+  {
+    "id": "acc-meituan-pay",
+    "type": "Liabilities",
+    "name": "美团月付",
+    "path": "Liabilities:Shawn:MeituanPay",
+    "currency": "CNY"
+  },
+  {
+    "id": "acc-housing",
+    "type": "Expenses",
+    "name": "房租水电",
+    "path": "Expenses:Housing",
+    "currency": "CNY"
+  },
+  {
+    "id": "acc-food",
+    "type": "Expenses",
+    "name": "餐饮聚会",
+    "path": "Expenses:Food",
+    "currency": "CNY"
+  },
+  {
+    "id": "acc-transport",
+    "type": "Expenses",
+    "name": "通勤成本",
+    "path": "Expenses:Transport",
+    "currency": "CNY"
+  },
+  {
+    "id": "acc-phone",
+    "type": "Expenses",
+    "name": "每月话费",
+    "path": "Expenses:Phone",
+    "currency": "CNY"
+  },
+  {
+    "id": "acc-household",
+    "type": "Expenses",
+    "name": "家居家电",
+    "path": "Expenses:Household",
+    "currency": "CNY"
+  },
+  {
+    "id": "acc-clothing",
+    "type": "Expenses",
+    "name": "服饰美妆",
+    "path": "Expenses:Clothing",
+    "currency": "CNY"
+  },
+  {
+    "id": "acc-entertainment",
+    "type": "Expenses",
+    "name": "日常娱乐",
+    "path": "Expenses:Entertainment",
+    "currency": "CNY"
+  },
+  {
+    "id": "acc-travel",
+    "type": "Expenses",
+    "name": "外出旅游",
+    "path": "Expenses:Travel",
+    "currency": "CNY"
+  },
+  {
+    "id": "acc-growth",
+    "type": "Expenses",
+    "name": "个人成长",
+    "path": "Expenses:Growth",
+    "currency": "CNY"
+  },
+  {
+    "id": "acc-gifts",
+    "type": "Expenses",
+    "name": "人情世故",
+    "path": "Expenses:Gifts",
+    "currency": "CNY"
+  },
+  {
+    "id": "acc-other-expense",
+    "type": "Expenses",
+    "name": "其他支出",
+    "path": "Expenses:Other",
+    "currency": "CNY"
+  },
+  {
+    "id": "acc-salary",
+    "type": "Income",
+    "name": "工资",
+    "path": "Income:Salary",
+    "currency": "CNY"
+  },
+  {
+    "id": "acc-bonus",
+    "type": "Income",
+    "name": "绩效奖金",
+    "path": "Income:Bonus",
+    "currency": "CNY"
+  },
+  {
+    "id": "acc-fund",
+    "type": "Income",
+    "name": "公积金提取",
+    "path": "Income:Fund",
+    "currency": "CNY"
+  },
+  {
+    "id": "acc-freelance",
+    "type": "Income",
+    "name": "副业收入",
+    "path": "Income:Freelance",
+    "currency": "CNY"
+  },
+  {
+    "id": "acc-investment",
+    "type": "Income",
+    "name": "理财利息/分红",
+    "path": "Income:Investment",
+    "currency": "CNY"
+  },
+  {
+    "id": "acc-reimbursement",
+    "type": "Income",
+    "name": "报销",
+    "path": "Income:Reimbursement",
+    "currency": "CNY"
+  },
+  {
+    "id": "acc-other-income",
+    "type": "Income",
+    "name": "其他收入",
+    "path": "Income:Other",
+    "currency": "CNY"
+  },
+  {
+    "id": "9ec97150-9fc5-4bc6-9410-3e3b96bdf06c",
+    "type": "Assets",
+    "name": "网商银行储蓄卡(7995)",
+    "path": "Assets:Shawn:MYB:Savings:7995",
+    "currency": "CNY"
+  },
+  {
+    "id": "a9fc474b-bc52-4b07-a22f-d80c31e6d9c5",
+    "type": "Assets",
+    "name": "邮储银行储蓄卡(6518)",
+    "path": "Assets:Shawn:PSBC:Savings:6518",
+    "currency": "CNY"
+  },
+  {
+    "id": "00bada07-29d5-48a2-9779-4ea4e77df062",
+    "type": "Assets",
+    "name": "微信零钱",
+    "path": "Assets:Fancy:WeChat",
+    "currency": "CNY"
+  },
+  {
+    "id": "5a0f1b7d-2809-413f-97de-28149c40db3c",
+    "type": "Liabilities",
+    "name": "Fancy的Huabei",
+    "path": "Liabilities:Fancy:Huabei",
+    "currency": "CNY"
+  }
+]

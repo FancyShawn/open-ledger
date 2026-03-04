@@ -1,0 +1,71 @@
+[
+  {
+    "id": "pm-yuebao",
+    "paymentMethod": "余额宝",
+    "accountType": "Alipay",
+    "enabled": true
+  },
+  {
+    "id": "pm-alipay",
+    "paymentMethod": "支付宝",
+    "accountType": "Alipay",
+    "enabled": true
+  },
+  {
+    "id": "pm-huabei",
+    "paymentMethod": "花呗",
+    "accountType": "Huabei",
+    "isLiability": true,
+    "enabled": true
+  },
+  {
+    "id": "pm-wechat-balance",
+    "paymentMethod": "零钱",
+    "accountType": "WeChat",
+    "enabled": true
+  },
+  {
+    "id": "pm-wechat",
+    "paymentMethod": "微信",
+    "accountType": "WeChat",
+    "enabled": true
+  },
+  {
+    "id": "pm-cmb",
+    "paymentMethod": "招商银行",
+    "accountType": "CMB:Savings:1526",
+    "enabled": true,
+    "isLiability": false,
+    "memberId": "shawn"
+  },
+  {
+    "id": "pm-jd-baitiao",
+    "paymentMethod": "白条",
+    "accountType": "JDBaiTiao",
+    "isLiability": true,
+    "enabled": true
+  },
+  {
+    "id": "pm-meituan",
+    "paymentMethod": "美团月付",
+    "accountType": "MeituanPay",
+    "isLiability": true,
+    "enabled": true
+  },
+  {
+    "id": "613f8691-9348-4131-92f9-20569e5bc564",
+    "paymentMethod": "网商银行",
+    "accountType": "MYB:Savings:7995",
+    "isLiability": false,
+    "enabled": true,
+    "memberId": "shawn"
+  },
+  {
+    "id": "2aad9832-f97d-44fd-ad50-2d6900f780a0",
+    "paymentMethod": "邮储银行",
+    "accountType": "PSBC:Savings:6518",
+    "isLiability": false,
+    "enabled": true,
+    "memberId": "shawn"
+  }
+]

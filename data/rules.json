@@ -1,0 +1,1122 @@
+[
+  {
+    "id": "pm-huabei-expense-credit",
+    "name": "花呗 | 支出·贷方",
+    "priority": 100,
+    "enabled": true,
+    "source": "system",
+    "appliesTo": {
+      "transactionType": "expense",
+      "side": "credit"
+    },
+    "match": {
+      "logic": "ALL",
+      "conditions": [
+        {
+          "field": "paymentMethod",
+          "operator": "contains",
+          "value": "花呗"
+        }
+      ]
+    },
+    "account": "Liabilities:{member}:Huabei",
+    "accountDisplayName": "花呗"
+  },
+  {
+    "id": "pm-huabei-income-debit",
+    "name": "花呗 | 收入·借方",
+    "priority": 100,
+    "enabled": true,
+    "source": "system",
+    "appliesTo": {
+      "transactionType": "income",
+      "side": "debit"
+    },
+    "match": {
+      "logic": "ALL",
+      "conditions": [
+        {
+          "field": "paymentMethod",
+          "operator": "contains",
+          "value": "花呗"
+        }
+      ]
+    },
+    "account": "Liabilities:{member}:Huabei",
+    "accountDisplayName": "花呗"
+  },
+  {
+    "id": "pm-yuebao-expense-credit",
+    "name": "余额宝 | 支出·贷方",
+    "priority": 100,
+    "enabled": true,
+    "source": "system",
+    "appliesTo": {
+      "transactionType": "expense",
+      "side": "credit"
+    },
+    "match": {
+      "logic": "ALL",
+      "conditions": [
+        {
+          "field": "paymentMethod",
+          "operator": "contains",
+          "value": "余额宝"
+        }
+      ]
+    },
+    "account": "Assets:{member}:Alipay",
+    "accountDisplayName": "余额宝"
+  },
+  {
+    "id": "pm-yuebao-income-debit",
+    "name": "余额宝 | 收入·借方",
+    "priority": 100,
+    "enabled": true,
+    "source": "system",
+    "appliesTo": {
+      "transactionType": "income",
+      "side": "debit"
+    },
+    "match": {
+      "logic": "ALL",
+      "conditions": [
+        {
+          "field": "paymentMethod",
+          "operator": "contains",
+          "value": "余额宝"
+        }
+      ]
+    },
+    "account": "Assets:{member}:Alipay",
+    "accountDisplayName": "余额宝"
+  },
+  {
+    "id": "pm-alipay-expense-credit",
+    "name": "支付宝 | 支出·贷方",
+    "priority": 90,
+    "enabled": true,
+    "source": "system",
+    "appliesTo": {
+      "transactionType": "expense",
+      "side": "credit"
+    },
+    "match": {
+      "logic": "ALL",
+      "conditions": [
+        {
+          "field": "paymentMethod",
+          "operator": "contains",
+          "value": "支付宝"
+        }
+      ]
+    },
+    "account": "Assets:{member}:Alipay",
+    "accountDisplayName": "支付宝"
+  },
+  {
+    "id": "pm-alipay-income-debit",
+    "name": "支付宝 | 收入·借方",
+    "priority": 90,
+    "enabled": true,
+    "source": "system",
+    "appliesTo": {
+      "transactionType": "income",
+      "side": "debit"
+    },
+    "match": {
+      "logic": "ALL",
+      "conditions": [
+        {
+          "field": "paymentMethod",
+          "operator": "contains",
+          "value": "支付宝"
+        }
+      ]
+    },
+    "account": "Assets:{member}:Alipay",
+    "accountDisplayName": "支付宝"
+  },
+  {
+    "id": "pm-wechat-lingqian-expense-credit",
+    "name": "零钱 | 支出·贷方",
+    "priority": 100,
+    "enabled": true,
+    "source": "system",
+    "appliesTo": {
+      "transactionType": "expense",
+      "side": "credit"
+    },
+    "match": {
+      "logic": "ALL",
+      "conditions": [
+        {
+          "field": "paymentMethod",
+          "operator": "contains",
+          "value": "零钱"
+        }
+      ]
+    },
+    "account": "Assets:{member}:WeChat",
+    "accountDisplayName": "零钱"
+  },
+  {
+    "id": "pm-wechat-lingqian-income-debit",
+    "name": "零钱 | 收入·借方",
+    "priority": 100,
+    "enabled": true,
+    "source": "user",
+    "appliesTo": {
+      "transactionType": "income",
+      "side": "debit"
+    },
+    "match": {
+      "logic": "ANY",
+      "conditions": [
+        {
+          "field": "paymentMethod",
+          "operator": "contains",
+          "value": "零钱"
+        },
+        {
+          "field": "paymentMethod",
+          "operator": "equals",
+          "value": "/"
+        }
+      ]
+    },
+    "account": "Assets:{member}:WeChat",
+    "accountDisplayName": "零钱"
+  },
+  {
+    "id": "pm-wechat-expense-credit",
+    "name": "微信 | 支出·贷方",
+    "priority": 90,
+    "enabled": true,
+    "source": "system",
+    "appliesTo": {
+      "transactionType": "expense",
+      "side": "credit"
+    },
+    "match": {
+      "logic": "ALL",
+      "conditions": [
+        {
+          "field": "paymentMethod",
+          "operator": "contains",
+          "value": "微信"
+        }
+      ]
+    },
+    "account": "Assets:{member}:WeChat",
+    "accountDisplayName": "微信"
+  },
+  {
+    "id": "pm-wechat-income-debit",
+    "name": "微信 | 收入·借方",
+    "priority": 90,
+    "enabled": true,
+    "source": "system",
+    "appliesTo": {
+      "transactionType": "income",
+      "side": "debit"
+    },
+    "match": {
+      "logic": "ALL",
+      "conditions": [
+        {
+          "field": "paymentMethod",
+          "operator": "contains",
+          "value": "微信"
+        }
+      ]
+    },
+    "account": "Assets:{member}:WeChat",
+    "accountDisplayName": "微信"
+  },
+  {
+    "id": "pm-cmb-expense-credit",
+    "name": "招行1526 | 支出·贷方",
+    "priority": 100,
+    "enabled": true,
+    "source": "system",
+    "member": "shawn",
+    "appliesTo": {
+      "transactionType": "expense",
+      "side": "credit"
+    },
+    "match": {
+      "logic": "ALL",
+      "conditions": [
+        {
+          "field": "paymentMethod",
+          "operator": "contains",
+          "value": "招商银行"
+        }
+      ]
+    },
+    "account": "Assets:Shawn:CMB:Savings:1526",
+    "accountDisplayName": "招商银行"
+  },
+  {
+    "id": "pm-cmb-income-debit",
+    "name": "招行1526 | 收入·借方",
+    "priority": 100,
+    "enabled": true,
+    "source": "system",
+    "member": "shawn",
+    "appliesTo": {
+      "transactionType": "income",
+      "side": "debit"
+    },
+    "match": {
+      "logic": "ALL",
+      "conditions": [
+        {
+          "field": "paymentMethod",
+          "operator": "contains",
+          "value": "招商银行"
+        }
+      ]
+    },
+    "account": "Assets:Shawn:CMB:Savings:1526",
+    "accountDisplayName": "招商银行"
+  },
+  {
+    "id": "pm-myb-expense-credit",
+    "name": "网商银行 | 支出·贷方",
+    "priority": 100,
+    "enabled": true,
+    "source": "system",
+    "member": "shawn",
+    "appliesTo": {
+      "transactionType": "expense",
+      "side": "credit"
+    },
+    "match": {
+      "logic": "ALL",
+      "conditions": [
+        {
+          "field": "paymentMethod",
+          "operator": "contains",
+          "value": "网商银行"
+        }
+      ]
+    },
+    "account": "Assets:Shawn:MYB:Savings:7995",
+    "accountDisplayName": "网商银行"
+  },
+  {
+    "id": "pm-myb-income-debit",
+    "name": "网商银行 | 收入·借方",
+    "priority": 100,
+    "enabled": true,
+    "source": "system",
+    "member": "shawn",
+    "appliesTo": {
+      "transactionType": "income",
+      "side": "debit"
+    },
+    "match": {
+      "logic": "ALL",
+      "conditions": [
+        {
+          "field": "paymentMethod",
+          "operator": "contains",
+          "value": "网商银行"
+        }
+      ]
+    },
+    "account": "Assets:Shawn:MYB:Savings:7995",
+    "accountDisplayName": "网商银行"
+  },
+  {
+    "id": "pm-psbc-expense-credit",
+    "name": "邮储银行 | 支出·贷方",
+    "priority": 100,
+    "enabled": true,
+    "source": "system",
+    "member": "shawn",
+    "appliesTo": {
+      "transactionType": "expense",
+      "side": "credit"
+    },
+    "match": {
+      "logic": "ALL",
+      "conditions": [
+        {
+          "field": "paymentMethod",
+          "operator": "contains",
+          "value": "邮储银行"
+        }
+      ]
+    },
+    "account": "Assets:Shawn:PSBC:Savings:6518",
+    "accountDisplayName": "邮储银行"
+  },
+  {
+    "id": "pm-psbc-income-debit",
+    "name": "邮储银行 | 收入·借方",
+    "priority": 100,
+    "enabled": true,
+    "source": "system",
+    "member": "shawn",
+    "appliesTo": {
+      "transactionType": "income",
+      "side": "debit"
+    },
+    "match": {
+      "logic": "ALL",
+      "conditions": [
+        {
+          "field": "paymentMethod",
+          "operator": "contains",
+          "value": "邮储银行"
+        }
+      ]
+    },
+    "account": "Assets:Shawn:PSBC:Savings:6518",
+    "accountDisplayName": "邮储银行"
+  },
+  {
+    "id": "pm-baitiao-expense-credit",
+    "name": "白条 | 支出·贷方",
+    "priority": 100,
+    "enabled": true,
+    "source": "system",
+    "appliesTo": {
+      "transactionType": "expense",
+      "side": "credit"
+    },
+    "match": {
+      "logic": "ALL",
+      "conditions": [
+        {
+          "field": "paymentMethod",
+          "operator": "contains",
+          "value": "白条"
+        }
+      ]
+    },
+    "account": "Liabilities:{member}:JDBaiTiao",
+    "accountDisplayName": "白条"
+  },
+  {
+    "id": "pm-baitiao-income-debit",
+    "name": "白条 | 收入·借方",
+    "priority": 100,
+    "enabled": true,
+    "source": "system",
+    "appliesTo": {
+      "transactionType": "income",
+      "side": "debit"
+    },
+    "match": {
+      "logic": "ALL",
+      "conditions": [
+        {
+          "field": "paymentMethod",
+          "operator": "contains",
+          "value": "白条"
+        }
+      ]
+    },
+    "account": "Liabilities:{member}:JDBaiTiao",
+    "accountDisplayName": "白条"
+  },
+  {
+    "id": "pm-meituan-expense-credit",
+    "name": "美团月付 | 支出·贷方",
+    "priority": 100,
+    "enabled": true,
+    "source": "system",
+    "appliesTo": {
+      "transactionType": "expense",
+      "side": "credit"
+    },
+    "match": {
+      "logic": "ALL",
+      "conditions": [
+        {
+          "field": "paymentMethod",
+          "operator": "contains",
+          "value": "美团月付"
+        }
+      ]
+    },
+    "account": "Liabilities:{member}:MeituanPay",
+    "accountDisplayName": "美团月付"
+  },
+  {
+    "id": "pm-meituan-income-debit",
+    "name": "美团月付 | 收入·借方",
+    "priority": 100,
+    "enabled": true,
+    "source": "system",
+    "appliesTo": {
+      "transactionType": "income",
+      "side": "debit"
+    },
+    "match": {
+      "logic": "ALL",
+      "conditions": [
+        {
+          "field": "paymentMethod",
+          "operator": "contains",
+          "value": "美团月付"
+        }
+      ]
+    },
+    "account": "Liabilities:{member}:MeituanPay",
+    "accountDisplayName": "美团月付"
+  },
+  {
+    "id": "exp-taobao-shanguang",
+    "name": "淘宝闪购 → 餐饮",
+    "priority": 200,
+    "enabled": true,
+    "source": "user",
+    "appliesTo": {
+      "transactionType": "expense",
+      "side": "debit"
+    },
+    "match": {
+      "logic": "ALL",
+      "conditions": [
+        {
+          "field": "counterparty",
+          "operator": "contains",
+          "value": "淘宝闪购"
+        }
+      ]
+    },
+    "account": "Expenses:Food",
+    "accountDisplayName": "Food"
+  },
+  {
+    "id": "exp-hema",
+    "name": "盒马 → 餐饮",
+    "priority": 200,
+    "enabled": true,
+    "source": "user",
+    "appliesTo": {
+      "transactionType": "expense",
+      "side": "debit"
+    },
+    "match": {
+      "logic": "ALL",
+      "conditions": [
+        {
+          "field": "counterparty",
+          "operator": "contains",
+          "value": "盒马"
+        }
+      ]
+    },
+    "account": "Expenses:Food",
+    "accountDisplayName": "Food"
+  },
+  {
+    "id": "exp-qixian",
+    "name": "七鲜 → 餐饮",
+    "priority": 200,
+    "enabled": true,
+    "source": "user",
+    "appliesTo": {
+      "transactionType": "expense",
+      "side": "debit"
+    },
+    "match": {
+      "logic": "ALL",
+      "conditions": [
+        {
+          "field": "counterparty",
+          "operator": "contains",
+          "value": "七鲜"
+        }
+      ]
+    },
+    "account": "Expenses:Food",
+    "accountDisplayName": "Food"
+  },
+  {
+    "id": "exp-hotmaxx",
+    "name": "好特卖 → 餐饮",
+    "priority": 200,
+    "enabled": true,
+    "source": "user",
+    "appliesTo": {
+      "transactionType": "expense",
+      "side": "debit"
+    },
+    "match": {
+      "logic": "ALL",
+      "conditions": [
+        {
+          "field": "counterparty",
+          "operator": "contains",
+          "value": "好特卖"
+        }
+      ]
+    },
+    "account": "Expenses:Food",
+    "accountDisplayName": "Food"
+  },
+  {
+    "id": "exp-mcdonalds",
+    "name": "麦当劳 → 餐饮",
+    "priority": 200,
+    "enabled": true,
+    "source": "user",
+    "appliesTo": {
+      "transactionType": "expense",
+      "side": "debit"
+    },
+    "match": {
+      "logic": "ALL",
+      "conditions": [
+        {
+          "field": "counterparty",
+          "operator": "contains",
+          "value": "麦当劳"
+        }
+      ]
+    },
+    "account": "Expenses:Food",
+    "accountDisplayName": "Food"
+  },
+  {
+    "id": "exp-luckin",
+    "name": "瑞幸咖啡 → 餐饮",
+    "priority": 200,
+    "enabled": true,
+    "source": "user",
+    "appliesTo": {
+      "transactionType": "expense",
+      "side": "debit"
+    },
+    "match": {
+      "logic": "ALL",
+      "conditions": [
+        {
+          "field": "counterparty",
+          "operator": "contains",
+          "value": "luckin coffee"
+        }
+      ]
+    },
+    "account": "Expenses:Food",
+    "accountDisplayName": "Food"
+  },
+  {
+    "id": "exp-xinfadi",
+    "name": "新发地 → 餐饮",
+    "priority": 200,
+    "enabled": true,
+    "source": "user",
+    "appliesTo": {
+      "transactionType": "expense",
+      "side": "debit"
+    },
+    "match": {
+      "logic": "ALL",
+      "conditions": [
+        {
+          "field": "counterparty",
+          "operator": "contains",
+          "value": "新发地"
+        }
+      ]
+    },
+    "account": "Expenses:Food",
+    "accountDisplayName": "Food"
+  },
+  {
+    "id": "exp-maidelong",
+    "name": "麦德龙 → 餐饮",
+    "priority": 200,
+    "enabled": true,
+    "source": "user",
+    "appliesTo": {
+      "transactionType": "expense",
+      "side": "debit"
+    },
+    "match": {
+      "logic": "ALL",
+      "conditions": [
+        {
+          "field": "counterparty",
+          "operator": "contains",
+          "value": "麦德龙"
+        }
+      ]
+    },
+    "account": "Expenses:Food",
+    "accountDisplayName": "Food"
+  },
+  {
+    "id": "exp-shenghuo-chaoshi",
+    "name": "生活超市 → 餐饮",
+    "priority": 200,
+    "enabled": true,
+    "source": "user",
+    "appliesTo": {
+      "transactionType": "expense",
+      "side": "debit"
+    },
+    "match": {
+      "logic": "ALL",
+      "conditions": [
+        {
+          "field": "counterparty",
+          "operator": "contains",
+          "value": "生活超市"
+        }
+      ]
+    },
+    "account": "Expenses:Food",
+    "accountDisplayName": "Food"
+  },
+  {
+    "id": "exp-ziguangyuan",
+    "name": "紫气羊来 → 餐饮",
+    "priority": 200,
+    "enabled": true,
+    "source": "user",
+    "appliesTo": {
+      "transactionType": "expense",
+      "side": "debit"
+    },
+    "match": {
+      "logic": "ALL",
+      "conditions": [
+        {
+          "field": "counterparty",
+          "operator": "contains",
+          "value": "紫气羊来"
+        }
+      ]
+    },
+    "account": "Expenses:Food",
+    "accountDisplayName": "Food"
+  },
+  {
+    "id": "exp-meituan",
+    "name": "美团 → 餐饮",
+    "priority": 200,
+    "enabled": true,
+    "source": "user",
+    "appliesTo": {
+      "transactionType": "expense",
+      "side": "debit"
+    },
+    "match": {
+      "logic": "ALL",
+      "conditions": [
+        {
+          "field": "counterparty",
+          "operator": "contains",
+          "value": "美团"
+        }
+      ]
+    },
+    "account": "Expenses:Food",
+    "accountDisplayName": "Food"
+  },
+  {
+    "id": "exp-pdd",
+    "name": "拼多多 → 餐饮",
+    "priority": 200,
+    "enabled": true,
+    "source": "user",
+    "appliesTo": {
+      "transactionType": "expense",
+      "side": "debit"
+    },
+    "match": {
+      "logic": "ALL",
+      "conditions": [
+        {
+          "field": "counterparty",
+          "operator": "contains",
+          "value": "拼多多"
+        }
+      ]
+    },
+    "account": "Expenses:Food",
+    "accountDisplayName": "Food"
+  },
+  {
+    "id": "exp-nzero",
+    "name": "NZERO → 餐饮",
+    "priority": 200,
+    "enabled": true,
+    "source": "user",
+    "appliesTo": {
+      "transactionType": "expense",
+      "side": "debit"
+    },
+    "match": {
+      "logic": "ALL",
+      "conditions": [
+        {
+          "field": "counterparty",
+          "operator": "contains",
+          "value": "NZERO"
+        }
+      ]
+    },
+    "account": "Expenses:Food",
+    "accountDisplayName": "Food"
+  },
+  {
+    "id": "exp-fancy-qinqin",
+    "name": "亲亲么么 → 餐饮",
+    "priority": 200,
+    "enabled": true,
+    "source": "user",
+    "appliesTo": {
+      "transactionType": "expense",
+      "side": "debit"
+    },
+    "match": {
+      "logic": "ALL",
+      "conditions": [
+        {
+          "field": "counterparty",
+          "operator": "contains",
+          "value": "AAA亲亲么么"
+        }
+      ]
+    },
+    "account": "Expenses:Food",
+    "accountDisplayName": "Food"
+  },
+  {
+    "id": "exp-tianmao",
+    "name": "天猫 → 餐饮",
+    "priority": 200,
+    "enabled": true,
+    "source": "user",
+    "appliesTo": {
+      "transactionType": "expense",
+      "side": "debit"
+    },
+    "match": {
+      "logic": "ALL",
+      "conditions": [
+        {
+          "field": "counterparty",
+          "operator": "contains",
+          "value": "天猫"
+        }
+      ]
+    },
+    "account": "Expenses:Food",
+    "accountDisplayName": "Food"
+  },
+  {
+    "id": "exp-yikatong",
+    "name": "一卡通 → 交通",
+    "priority": 200,
+    "enabled": true,
+    "source": "user",
+    "appliesTo": {
+      "transactionType": "expense",
+      "side": "debit"
+    },
+    "match": {
+      "logic": "ALL",
+      "conditions": [
+        {
+          "field": "counterparty",
+          "operator": "contains",
+          "value": "北京一卡通"
+        }
+      ]
+    },
+    "account": "Expenses:Transport",
+    "accountDisplayName": "Transport"
+  },
+  {
+    "id": "exp-gaode-dache",
+    "name": "高德打车 → 交通",
+    "priority": 200,
+    "enabled": true,
+    "source": "user",
+    "appliesTo": {
+      "transactionType": "expense",
+      "side": "debit"
+    },
+    "match": {
+      "logic": "ALL",
+      "conditions": [
+        {
+          "field": "counterparty",
+          "operator": "contains",
+          "value": "高德打车"
+        }
+      ]
+    },
+    "account": "Expenses:Transport",
+    "accountDisplayName": "Transport"
+  },
+  {
+    "id": "exp-chongdianzhuang",
+    "name": "充电桩 → 交通",
+    "priority": 200,
+    "enabled": true,
+    "source": "user",
+    "appliesTo": {
+      "transactionType": "expense",
+      "side": "debit"
+    },
+    "match": {
+      "logic": "ALL",
+      "conditions": [
+        {
+          "field": "counterparty",
+          "operator": "contains",
+          "value": "充电桩"
+        }
+      ]
+    },
+    "account": "Expenses:Transport",
+    "accountDisplayName": "Transport"
+  },
+  {
+    "id": "exp-wukong",
+    "name": "悟空出行 → 交通",
+    "priority": 200,
+    "enabled": true,
+    "source": "user",
+    "appliesTo": {
+      "transactionType": "expense",
+      "side": "debit"
+    },
+    "match": {
+      "logic": "ALL",
+      "conditions": [
+        {
+          "field": "counterparty",
+          "operator": "contains",
+          "value": "悟空出行"
+        }
+      ]
+    },
+    "account": "Expenses:Transport",
+    "accountDisplayName": "Transport"
+  },
+  {
+    "id": "exp-zuche",
+    "name": "租车 → 交通",
+    "priority": 200,
+    "enabled": true,
+    "source": "user",
+    "appliesTo": {
+      "transactionType": "expense",
+      "side": "debit"
+    },
+    "match": {
+      "logic": "ALL",
+      "conditions": [
+        {
+          "field": "counterparty",
+          "operator": "contains",
+          "value": "租车"
+        }
+      ]
+    },
+    "account": "Expenses:Transport",
+    "accountDisplayName": "Transport"
+  },
+  {
+    "id": "exp-hainan-hangkong",
+    "name": "海航 → 旅游",
+    "priority": 200,
+    "enabled": true,
+    "source": "user",
+    "appliesTo": {
+      "transactionType": "expense",
+      "side": "debit"
+    },
+    "match": {
+      "logic": "ALL",
+      "conditions": [
+        {
+          "field": "counterparty",
+          "operator": "contains",
+          "value": "海航"
+        }
+      ]
+    },
+    "account": "Expenses:Travel",
+    "accountDisplayName": "Travel"
+  },
+  {
+    "id": "exp-claude-sub",
+    "name": "Claude订阅 → 成长",
+    "priority": 200,
+    "enabled": true,
+    "source": "user",
+    "appliesTo": {
+      "transactionType": "expense",
+      "side": "debit"
+    },
+    "match": {
+      "logic": "ALL",
+      "conditions": [
+        {
+          "field": "counterparty",
+          "operator": "contains",
+          "value": "cm**8"
+        }
+      ]
+    },
+    "account": "Expenses:Growth",
+    "accountDisplayName": "Growth"
+  },
+  {
+    "id": "inc-salary",
+    "name": "工资代发 → 工资",
+    "priority": 250,
+    "enabled": true,
+    "source": "system",
+    "appliesTo": {
+      "transactionType": "income",
+      "side": "credit"
+    },
+    "match": {
+      "logic": "ALL",
+      "conditions": [
+        {
+          "field": "description",
+          "operator": "contains",
+          "value": "代发工资"
+        }
+      ]
+    },
+    "account": "Income:Salary",
+    "accountDisplayName": "Salary"
+  },
+  {
+    "id": "inc-gongjijin",
+    "name": "公积金代发 → 工资",
+    "priority": 250,
+    "enabled": true,
+    "source": "system",
+    "appliesTo": {
+      "transactionType": "income",
+      "side": "credit"
+    },
+    "match": {
+      "logic": "ALL",
+      "conditions": [
+        {
+          "field": "description",
+          "operator": "contains",
+          "value": "代发住房公积金"
+        }
+      ]
+    },
+    "account": "Income:Salary",
+    "accountDisplayName": "Salary"
+  },
+  {
+    "id": "inc-dividend",
+    "name": "分红 → 理财",
+    "priority": 200,
+    "enabled": true,
+    "source": "system",
+    "appliesTo": {
+      "transactionType": "income",
+      "side": "credit"
+    },
+    "match": {
+      "logic": "ALL",
+      "conditions": [
+        {
+          "field": "description",
+          "operator": "contains",
+          "value": "分红"
+        }
+      ]
+    },
+    "account": "Income:Investment",
+    "accountDisplayName": "Investment"
+  },
+  {
+    "id": "inc-interest",
+    "name": "结息 → 理财",
+    "priority": 200,
+    "enabled": true,
+    "source": "system",
+    "appliesTo": {
+      "transactionType": "income",
+      "side": "credit"
+    },
+    "match": {
+      "logic": "ALL",
+      "conditions": [
+        {
+          "field": "description",
+          "operator": "contains",
+          "value": "账户结息"
+        }
+      ]
+    },
+    "account": "Income:Investment",
+    "accountDisplayName": "Investment"
+  },
+  {
+    "id": "inc-platform-reward",
+    "name": "平台红包 → 其他收入",
+    "priority": 250,
+    "enabled": true,
+    "source": "system",
+    "appliesTo": {
+      "transactionType": "income",
+      "side": "credit"
+    },
+    "match": {
+      "logic": "ALL",
+      "conditions": [
+        {
+          "field": "counterparty",
+          "operator": "contains",
+          "value": "红包"
+        }
+      ]
+    },
+    "account": "Income:Other",
+    "accountDisplayName": "Other"
+  },
+  {
+    "id": "inc-yuebao-earnings",
+    "name": "余额宝收益 → 理财",
+    "priority": 200,
+    "enabled": true,
+    "source": "system",
+    "appliesTo": {
+      "transactionType": "income",
+      "side": "credit"
+    },
+    "match": {
+      "logic": "ALL",
+      "conditions": [
+        {
+          "field": "description",
+          "operator": "contains",
+          "value": "余额宝"
+        },
+        {
+          "field": "description",
+          "operator": "contains",
+          "value": "收益"
+        }
+      ]
+    },
+    "account": "Income:Investment",
+    "accountDisplayName": "Investment"
+  }
+]
