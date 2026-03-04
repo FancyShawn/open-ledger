@@ -41,6 +41,10 @@ yarn-error.log*
 /transactions/
 /config/
 
+# hidden directories
+/.claude/
+/.qoder/
+
 # typescript
 *.tsbuildinfo
 next-env.d.ts
