@@ -33,6 +33,7 @@ import { useStore } from "@/lib/store";
 import { toast } from "sonner";
 import type {
   AccountRule,
+  SkipRule,
   TransactionDirection,
   RuleSide,
   ConditionField,
@@ -104,6 +105,8 @@ export default function RulesPage() {
   const {
     rules,
     setRules,
+    skipRules,
+    setSkipRules,
     transactions,
     accounts,
     setAccounts,
@@ -116,6 +119,19 @@ export default function RulesPage() {
   const [searchQuery, setSearchQuery] = useState("");
   const [collapsedSlots, setCollapsedSlots] = useState<Set<string>>(new Set());
   const [deletingRuleId, setDeletingRuleId] = useState<string | null>(null);
+
+  // Skip rules state
+  const [skipDialogOpen, setSkipDialogOpen] = useState(false);
+  const [editingSkip, setEditingSkip] = useState<SkipRule | null>(null);
+  const [deletingSkipRuleId, setDeletingSkipRuleId] = useState<string | null>(null);
+  const [skipForm, setSkipForm] = useState({
+    name: "",
+    priority: 200,
+    member: "" as string,
+    conditions: [{ field: "counterparty" as ConditionField, operator: "contains" as ConditionOperator, value: "" }] as MatchCondition[],
+    logic: "ALL" as "ALL" | "ANY",
+    reason: "",
+  });
 
   // Form state
   const [form, setForm] = useState({
@@ -134,19 +150,23 @@ export default function RulesPage() {
     logic: "ALL" as "ALL" | "ANY",
     account: "",
     accountDisplayName: "",
+    excludeFromStats: false,
   });
 
   useEffect(() => {
     fetch("/api/rules")
       .then((r) => r.json())
       .then(setRules);
+    fetch("/api/skip-rules")
+      .then((r) => r.json())
+      .then(setSkipRules);
     fetch("/api/accounts")
       .then((r) => r.json())
       .then(setAccounts);
     fetch("/api/members")
       .then((r) => r.json())
       .then(setMembers);
-  }, [setRules, setAccounts, setMembers]);
+  }, [setRules, setSkipRules, setAccounts, setMembers]);
 
   // Group rules by slot
   const rulesBySlot = useMemo(() => {
@@ -235,6 +255,7 @@ export default function RulesPage() {
       logic: "ALL",
       account: "",
       accountDisplayName: "",
+      excludeFromStats: false,
     });
     setDialogOpen(true);
   }
@@ -257,6 +278,7 @@ export default function RulesPage() {
       logic: rule.match.logic,
       account: rule.account,
       accountDisplayName: rule.accountDisplayName || "",
+      excludeFromStats: rule.excludeFromStats || false,
     });
     setDialogOpen(true);
   }
@@ -302,6 +324,7 @@ export default function RulesPage() {
       },
       account: form.account,
       accountDisplayName: form.accountDisplayName || form.account,
+      excludeFromStats: form.excludeFromStats,
     };
 
     try {
@@ -381,6 +404,142 @@ export default function RulesPage() {
     });
   }
 
+  // ========== Skip Rules Handlers ==========
+
+  function openCreateSkip() {
+    setEditingSkip(null);
+    setSkipForm({
+      name: "",
+      priority: 200,
+      member: "",
+      conditions: [{ field: "counterparty", operator: "contains", value: "" }],
+      logic: "ALL",
+      reason: "",
+    });
+    setSkipDialogOpen(true);
+  }
+
+  function openEditSkip(rule: SkipRule) {
+    setEditingSkip(rule);
+    setSkipForm({
+      name: rule.name,
+      priority: rule.priority,
+      member: rule.member || "",
+      conditions:
+        rule.match.conditions.length > 0
+          ? [...rule.match.conditions]
+          : [{ field: "counterparty", operator: "contains", value: "" }],
+      logic: rule.match.logic,
+      reason: rule.reason,
+    });
+    setSkipDialogOpen(true);
+  }
+
+  async function handleSaveSkip() {
+    if (!skipForm.name) {
+      toast.error("请填写规则名称");
+      return;
+    }
+    if (!skipForm.reason) {
+      toast.error("请填写跳过原因");
+      return;
+    }
+    const validConditions = skipForm.conditions.filter((c) => c.value);
+    if (validConditions.length === 0) {
+      toast.error("请至少添加一个有效条件");
+      return;
+    }
+
+    const body: Partial<SkipRule> = {
+      name: skipForm.name,
+      priority: skipForm.priority,
+      enabled: true,
+      source: "user",
+      member: skipForm.member || undefined,
+      match: {
+        logic: skipForm.logic,
+        conditions: validConditions,
+      },
+      reason: skipForm.reason,
+    };
+
+    try {
+      if (editingSkip) {
+        const res = await fetch("/api/skip-rules", {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ ...body, id: editingSkip.id }),
+        });
+        if (!res.ok) throw new Error("更新失败");
+      } else {
+        const res = await fetch("/api/skip-rules", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(body),
+        });
+        if (!res.ok) throw new Error("创建失败");
+      }
+      const updated = await fetch("/api/skip-rules").then((r) => r.json());
+      setSkipRules(updated);
+      setSkipDialogOpen(false);
+      toast.success(editingSkip ? "已更新" : "已创建");
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "操作失败");
+    }
+  }
+
+  async function handleDeleteSkip(id: string) {
+    try {
+      await fetch(`/api/skip-rules?id=${id}`, { method: "DELETE" });
+      const updated = await fetch("/api/skip-rules").then((r) => r.json());
+      setSkipRules(updated);
+      toast.success("已删除");
+    } catch {
+      toast.error("删除失败");
+    }
+  }
+
+  async function handleToggleSkip(rule: SkipRule) {
+    try {
+      await fetch("/api/skip-rules", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id: rule.id, enabled: !rule.enabled }),
+      });
+      const updated = await fetch("/api/skip-rules").then((r) => r.json());
+      setSkipRules(updated);
+    } catch {
+      toast.error("切换失败");
+    }
+  }
+
+  function addSkipCondition() {
+    setSkipForm({
+      ...skipForm,
+      conditions: [
+        ...skipForm.conditions,
+        { field: "description", operator: "contains", value: "" },
+      ],
+    });
+  }
+
+  function removeSkipCondition(idx: number) {
+    if (skipForm.conditions.length <= 1) return;
+    setSkipForm({
+      ...skipForm,
+      conditions: skipForm.conditions.filter((_, i) => i !== idx),
+    });
+  }
+
+  function updateSkipCondition(idx: number, patch: Partial<MatchCondition>) {
+    setSkipForm({
+      ...skipForm,
+      conditions: skipForm.conditions.map((c, i) =>
+        i === idx ? { ...c, ...patch } : c,
+      ),
+    });
+  }
+
   // Stats
   const stats = {
     total: rules.length,
@@ -409,6 +568,52 @@ export default function RulesPage() {
               新建规则
             </Button>
           </div>
+        </div>
+
+        {/* Quick Navigation Tabs */}
+        <div className="flex gap-2 border-b pb-3">
+          <Button
+            variant="ghost"
+            size="sm"
+            className="gap-1.5"
+            onClick={() => {
+              document.getElementById("expense-rules")?.scrollIntoView({ behavior: "smooth" });
+            }}
+          >
+            <CreditCard className="h-3.5 w-3.5" />
+            支出规则
+            <Badge variant="outline" className="text-[10px]">
+              {(rulesBySlot["expense.credit"]?.length || 0) + (rulesBySlot["expense.debit"]?.length || 0)}
+            </Badge>
+          </Button>
+          <Button
+            variant="ghost"
+            size="sm"
+            className="gap-1.5"
+            onClick={() => {
+              document.getElementById("income-rules")?.scrollIntoView({ behavior: "smooth" });
+            }}
+          >
+            <Wallet className="h-3.5 w-3.5" />
+            收入规则
+            <Badge variant="outline" className="text-[10px]">
+              {(rulesBySlot["income.credit"]?.length || 0) + (rulesBySlot["income.debit"]?.length || 0)}
+            </Badge>
+          </Button>
+          <Button
+            variant="ghost"
+            size="sm"
+            className="gap-1.5"
+            onClick={() => {
+              document.getElementById("skip-rules")?.scrollIntoView({ behavior: "smooth" });
+            }}
+          >
+            <AlertTriangle className="h-3.5 w-3.5 text-amber-600" />
+            跳过规则
+            <Badge variant="outline" className="text-[10px]">
+              {skipRules.length}
+            </Badge>
+          </Button>
         </div>
 
         {/* Stats */}
@@ -499,7 +704,7 @@ export default function RulesPage() {
               if (searchQuery && totalInGroup === 0) return null;
 
               return (
-                <Card key={dir}>
+                <Card key={dir} id={`${dir}-rules`}>
                   <CardContent className="py-4 space-y-3">
                     {/* Group header */}
                     <div className="flex items-center gap-2">
@@ -542,6 +747,125 @@ export default function RulesPage() {
           </div>
         )}
 
+        {/* Skip Rules Section */}
+        <Card id="skip-rules" className="border-amber-200/50">
+          <CardContent className="py-4 space-y-3">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <AlertTriangle className="h-4 w-4 text-amber-600" />
+                <h2 className="text-sm font-semibold">跳过规则</h2>
+                <Badge variant="outline" className="text-[10px]">
+                  {skipRules.length} 规则
+                </Badge>
+              </div>
+              <Button variant="outline" size="sm" onClick={openCreateSkip}>
+                <Plus className="mr-1.5 h-3.5 w-3.5" />
+                新建跳过规则
+              </Button>
+            </div>
+
+            <p className="text-xs text-muted-foreground">
+              匹配这些规则的交易将被标记为跳过，不会计入最终账单
+            </p>
+
+            {skipRules.length === 0 ? (
+              <div className="text-center py-4 text-sm text-muted-foreground">
+                暂无跳过规则
+              </div>
+            ) : (
+              <div className="space-y-1.5">
+                {skipRules
+                  .sort((a, b) => b.priority - a.priority)
+                  .map((rule) => (
+                    <div
+                      key={rule.id}
+                      className={`flex items-center gap-3 rounded-md border bg-background px-3 py-2 transition-opacity ${
+                        rule.enabled ? "" : "opacity-50"
+                      }`}
+                    >
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <div>
+                            <Switch
+                              checked={rule.enabled}
+                              onCheckedChange={() => handleToggleSkip(rule)}
+                            />
+                          </div>
+                        </TooltipTrigger>
+                        <TooltipContent>
+                          {rule.enabled ? "点击禁用" : "点击启用"}
+                        </TooltipContent>
+                      </Tooltip>
+
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center gap-2 flex-wrap">
+                          <p className="text-sm font-medium truncate">
+                            {rule.name}
+                          </p>
+                          <Badge
+                            variant="outline"
+                            className="text-[10px] shrink-0 tabular-nums"
+                          >
+                            P{rule.priority}
+                          </Badge>
+                          {rule.member && (
+                            <Badge
+                              variant="secondary"
+                              className="text-[10px] shrink-0"
+                            >
+                              {rule.member}
+                            </Badge>
+                          )}
+                        </div>
+                        <div className="flex items-center gap-1.5 mt-1 text-xs text-muted-foreground">
+                          <code className="bg-muted px-1.5 py-0.5 rounded text-[10px]">
+                            {skipConditionSummary(rule)}
+                          </code>
+                          <ArrowRight className="h-3 w-3 shrink-0" />
+                          <Badge
+                            variant="secondary"
+                            className="text-[10px] bg-amber-100 text-amber-700 dark:bg-amber-900 dark:text-amber-300"
+                          >
+                            跳过: {rule.reason}
+                          </Badge>
+                        </div>
+                      </div>
+
+                      <div className="flex gap-1 shrink-0">
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              className="h-8 w-8"
+                              onClick={() => openEditSkip(rule)}
+                            >
+                              <Pencil className="h-3.5 w-3.5" />
+                            </Button>
+                          </TooltipTrigger>
+                          <TooltipContent>编辑</TooltipContent>
+                        </Tooltip>
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              className="h-8 w-8 text-destructive hover:text-destructive"
+                              onClick={() => setDeletingSkipRuleId(rule.id)}
+                            >
+                              <Trash2 className="h-3.5 w-3.5" />
+                            </Button>
+                          </TooltipTrigger>
+                          <TooltipContent>删除</TooltipContent>
+                        </Tooltip>
+                      </div>
+                    </div>
+                  ))}
+              </div>
+            )}
+          </CardContent>
+        </Card>
+
         <ConfirmDialog
           open={!!deletingRuleId}
           onOpenChange={(open) => {
@@ -551,6 +875,18 @@ export default function RulesPage() {
           confirmLabel="删除"
           onConfirm={() => {
             if (deletingRuleId) handleDelete(deletingRuleId);
+          }}
+        />
+
+        <ConfirmDialog
+          open={!!deletingSkipRuleId}
+          onOpenChange={(open) => {
+            if (!open) setDeletingSkipRuleId(null);
+          }}
+          title="确定要删除这条跳过规则吗？"
+          confirmLabel="删除"
+          onConfirm={() => {
+            if (deletingSkipRuleId) handleDeleteSkip(deletingSkipRuleId);
           }}
         />
 
@@ -596,6 +932,21 @@ export default function RulesPage() {
                     }
                   />
                 </div>
+              </div>
+
+              <div className="flex items-center justify-between">
+                <div>
+                  <Label>不计入收支统计</Label>
+                  <p className="text-xs text-muted-foreground">
+                    匹配此规则的交易不计入收支统计（如转账类）
+                  </p>
+                </div>
+                <Switch
+                  checked={form.excludeFromStats}
+                  onCheckedChange={(checked) =>
+                    setForm({ ...form, excludeFromStats: checked })
+                  }
+                />
               </div>
 
               <Separator />
@@ -947,6 +1298,232 @@ export default function RulesPage() {
             </DialogFooter>
           </DialogContent>
         </Dialog>
+
+        {/* Skip Rules Dialog */}
+        <Dialog open={skipDialogOpen} onOpenChange={setSkipDialogOpen}>
+          <DialogContent className="max-w-lg max-h-[85vh] overflow-y-auto">
+            <DialogHeader>
+              <DialogTitle className="flex items-center gap-2">
+                {editingSkip ? (
+                  <>
+                    <Pencil className="h-4 w-4" />
+                    编辑跳过规则
+                  </>
+                ) : (
+                  <>
+                    <Plus className="h-4 w-4" />
+                    新建跳过规则
+                  </>
+                )}
+              </DialogTitle>
+            </DialogHeader>
+            <div className="space-y-4 py-2">
+              {/* Basic info */}
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label>规则名称</Label>
+                  <Input
+                    value={skipForm.name}
+                    onChange={(e) =>
+                      setSkipForm({ ...skipForm, name: e.target.value })
+                    }
+                    placeholder="如：内部转账"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label>优先级</Label>
+                  <Input
+                    type="number"
+                    value={skipForm.priority}
+                    onChange={(e) =>
+                      setSkipForm({
+                        ...skipForm,
+                        priority: parseInt(e.target.value) || 0,
+                      })
+                    }
+                  />
+                </div>
+              </div>
+
+              {/* Skip reason */}
+              <div className="space-y-2">
+                <Label>跳过原因</Label>
+                <Input
+                  value={skipForm.reason}
+                  onChange={(e) =>
+                    setSkipForm({ ...skipForm, reason: e.target.value })
+                  }
+                  placeholder="如：内部转账、退款、不计收支"
+                />
+                <p className="text-xs text-muted-foreground">
+                  匹配的交易将被标记为此原因并跳过
+                </p>
+              </div>
+
+              <Separator />
+
+              {/* Member scope */}
+              {members.length > 0 && (
+                <div className="space-y-2">
+                  <Label>成员作用域</Label>
+                  <Select
+                    value={skipForm.member || "__all__"}
+                    onValueChange={(v) =>
+                      setSkipForm({
+                        ...skipForm,
+                        member: v === "__all__" ? "" : v,
+                      })
+                    }
+                  >
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="__all__">所有成员</SelectItem>
+                      {members.map((m) => (
+                        <SelectItem key={m.id} value={m.id}>
+                          仅 {m.name}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+              )}
+
+              <Separator />
+
+              {/* Conditions */}
+              <div className="space-y-3">
+                <div className="flex items-center gap-2">
+                  <Label>匹配条件</Label>
+                  {skipForm.conditions.length > 1 && (
+                    <Select
+                      value={skipForm.logic}
+                      onValueChange={(v) =>
+                        setSkipForm({ ...skipForm, logic: v as "ALL" | "ANY" })
+                      }
+                    >
+                      <SelectTrigger className="w-[100px] h-7 text-xs">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="ALL">全部满足</SelectItem>
+                        <SelectItem value="ANY">任一满足</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  )}
+                </div>
+                {skipForm.conditions.map((cond, idx) => (
+                  <div key={idx} className="flex gap-2 items-start">
+                    <Select
+                      value={cond.field}
+                      onValueChange={(v) =>
+                        updateSkipCondition(idx, {
+                          field: v as ConditionField,
+                        })
+                      }
+                    >
+                      <SelectTrigger className="w-[110px]">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {(
+                          Object.entries(FIELD_LABELS) as [
+                            ConditionField,
+                            string,
+                          ][]
+                        ).map(([k, v]) => (
+                          <SelectItem key={k} value={k}>
+                            {v}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                    <Select
+                      value={cond.operator}
+                      onValueChange={(v) =>
+                        updateSkipCondition(idx, {
+                          operator: v as ConditionOperator,
+                        })
+                      }
+                    >
+                      <SelectTrigger className="w-[100px]">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {cond.field === "amount"
+                          ? (
+                              [
+                                "equals",
+                                "gt",
+                                "gte",
+                                "lt",
+                                "lte",
+                              ] as ConditionOperator[]
+                            ).map((op) => (
+                              <SelectItem key={op} value={op}>
+                                {OPERATOR_LABELS[op]}
+                              </SelectItem>
+                            ))
+                          : (
+                              [
+                                "contains",
+                                "notContains",
+                                "equals",
+                                "startsWith",
+                                "endsWith",
+                                "regex",
+                              ] as ConditionOperator[]
+                            ).map((op) => (
+                              <SelectItem key={op} value={op}>
+                                {OPERATOR_LABELS[op]}
+                              </SelectItem>
+                            ))}
+                      </SelectContent>
+                    </Select>
+                    <Input
+                      className="flex-1"
+                      value={cond.value}
+                      onChange={(e) =>
+                        updateSkipCondition(idx, { value: e.target.value })
+                      }
+                      placeholder="值"
+                    />
+                    {skipForm.conditions.length > 1 && (
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="h-9 w-9 shrink-0 text-destructive"
+                        onClick={() => removeSkipCondition(idx)}
+                      >
+                        <Trash2 className="h-3.5 w-3.5" />
+                      </Button>
+                    )}
+                  </div>
+                ))}
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={addSkipCondition}
+                >
+                  <Plus className="mr-1 h-3 w-3" />
+                  添加条件
+                </Button>
+              </div>
+            </div>
+            <DialogFooter>
+              <Button
+                variant="outline"
+                onClick={() => setSkipDialogOpen(false)}
+              >
+                取消
+              </Button>
+              <Button onClick={handleSaveSkip}>
+                {editingSkip ? "保存" : "创建"}
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
       </div>
     </TooltipProvider>
   );
@@ -1131,6 +1708,22 @@ function CreatedByBadge({ createdBy }: { createdBy: string }) {
 }
 
 function conditionSummary(rule: AccountRule): string {
+  if (!rule.match?.conditions?.length) return "(无条件)";
+  const parts = rule.match.conditions.map((c) => {
+    const field = FIELD_LABELS[c.field] || c.field;
+    const op =
+      c.operator === "contains"
+        ? "含"
+        : c.operator === "regex"
+          ? "~"
+          : OPERATOR_LABELS[c.operator] || c.operator;
+    return `${field}${op}"${c.value}"`;
+  });
+  const joiner = rule.match.logic === "ALL" ? " & " : " | ";
+  return parts.join(joiner);
+}
+
+function skipConditionSummary(rule: SkipRule): string {
   if (!rule.match?.conditions?.length) return "(无条件)";
   const parts = rule.match.conditions.map((c) => {
     const field = FIELD_LABELS[c.field] || c.field;

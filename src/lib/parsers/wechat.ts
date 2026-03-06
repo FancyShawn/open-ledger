@@ -99,38 +99,19 @@ export const wechatParser: BillParser = {
         }
       })
 
-      // Determine direction first (before skipReason, for clarity)
+      // Determine direction
       let direction: Transaction['direction'] = 'expense'
       if (directionStr === '收入') {
         direction = 'income'
       }
 
-      // Determine skip reason
+      // No automatic skip reasons - all skips must be user-defined via rules
       let skipReason: string | undefined
-
-      // Check if marked as "不计收支" or no direction (internal transfer)
-      if (directionStr === '不计收支' || directionStr.includes('不计收支') || !directionStr || directionStr === '/') {
-        skipReason = '内部流转'
-      }
-      // Check amount validity
-      else if (isNaN(amount) || amount <= 0) {
-        skipReason = '无效金额'
-      }
-      // Check transaction status
-      else if (status.includes('已全额退款')) {
-        skipReason = '已全额退款'
-      } else if (status.includes('已退还') || status.includes('退还')) {
-        skipReason = '交易已退还'
-      } else if (status.includes('已关闭')) {
-        skipReason = '交易已关闭'
-      } else if (status.includes('已撤销')) {
-        skipReason = '交易已撤销'
-      }
 
       // Handle partial refunds: extract refund amount from status like "已退款(￥40.13)"
       let finalAmount = isNaN(amount) || amount < 0 ? 0 : amount
       const partialRefundMatch = status.match(/已退款[（(][¥￥]?([\d.]+)[）)]/)
-      if (partialRefundMatch && !skipReason) {
+      if (partialRefundMatch) {
         const refundAmount = parseFloat(partialRefundMatch[1])
         if (!isNaN(refundAmount)) {
           rawData['原始金额'] = String(finalAmount)

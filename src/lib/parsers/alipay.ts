@@ -88,33 +88,16 @@ export const alipayParser: BillParser = {
         }
       }
 
-      // Determine direction first (before skipReason, for clarity)
+      // Determine direction
+      // "收益发放" (like 余额宝收益) and "银行卡定时转入" are income
       let direction: Transaction['direction'] = 'expense'
-      if (directionStr === '收入') {
+      const description = (row['商品说明'] || '').trim()
+      if (directionStr === '收入' || description.includes('收益发放') || description.includes('银行卡定时转入')) {
         direction = 'income'
       }
 
-      // Determine skip reason
+      // No automatic skip reasons - all skips must be user-defined via rules
       let skipReason: string | undefined
-
-      // Check if marked as "不计收支" or no direction (internal transfer)
-      if (directionStr === '不计收支' || !directionStr || directionStr === '/') {
-        skipReason = '内部流转'
-      }
-      // Check amount validity
-      else if (isNaN(amount) || amount <= 0) {
-        skipReason = '无效金额'
-      }
-      // Check transaction status
-      else if (status && !status.includes('成功')) {
-        if (status.includes('退款')) {
-          skipReason = '已退款'
-        } else if (status.includes('关闭')) {
-          skipReason = '交易关闭'
-        } else {
-          skipReason = status
-        }
-      }
 
       // Handle partial refund amounts
       let finalAmount = isNaN(amount) || amount < 0 ? 0 : amount

@@ -58,6 +58,7 @@ export const cmbParser: BillParser = {
         '代付业务',
         '工资',
         '结息',
+        '定时转入',
       ]
 
       let txType = ''
@@ -83,33 +84,14 @@ export const cmbParser: BillParser = {
 
       const isIncome = amount > 0
 
-      // Determine direction first (before skipReason, for clarity)
+      // Determine direction
       let direction: Transaction['direction'] = isIncome ? 'income' : 'expense'
 
       // Determine platformCategory from transaction type
       const platformCategory = txType || undefined
 
-      // Determine skip reason (only for truly invalid/unparseable transactions)
-      // Note: Business logic like "理财通 is internal transfer" should be handled by rule engine, not parser
+      // No automatic skip reasons - all skips must be user-defined via rules
       let skipReason: string | undefined
-      if (isNaN(amount)) {
-        skipReason = '无效金额'
-      } else if (txType.includes('退款') || txType.includes('退货')) {
-        skipReason = '退款'
-      } else if (counterparty.includes('退款') || counterparty.includes('退货')) {
-        skipReason = '退款'
-      } else if (isIncome && (
-        counterparty.includes('退') || 
-        txType.includes('退') ||
-        rest.includes('原路退回') ||
-        rest.includes('退回')
-      )) {
-        skipReason = '退款'
-      } else if (txType === '结息') {
-        skipReason = '银行结息'
-      }
-      // Removed: 网上转账/理财通/余额宝 -> 内部流转
-      // This is business logic and should be handled by user-configured rules
 
       // Build raw data
       const rawData: Record<string, string> = {

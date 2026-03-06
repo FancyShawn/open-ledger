@@ -5,12 +5,12 @@ import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
 
 const links = [
-  { href: "/", label: "Overview" },
-  { href: "/upload", label: "Upload" },
-  { href: "/accounts", label: "Accounts" },
-  { href: "/rules", label: "Rules" },
-  { href: "/transactions", label: "Transactions" },
-  { href: "/settings", label: "Settings" },
+  { href: "/", label: "概览" },
+  { href: "/upload", label: "上传" },
+  { href: "/accounts", label: "账户" },
+  { href: "/rules", label: "规则" },
+  { href: "/transactions", label: "交易" },
+  { href: "/settings", label: "设置" },
 ];
 
 export function Nav() {

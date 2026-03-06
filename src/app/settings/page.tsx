@@ -29,7 +29,17 @@ import {
 } from "@/components/ui/table";
 import { Separator } from "@/components/ui/separator";
 import { ConfirmDialog } from "@/components/confirm-dialog";
-import type { Member, Account } from "@/types";
+import { Switch } from "@/components/ui/switch";
+import type { Member } from "@/types";
+
+interface AIConfig {
+  enabled: boolean;
+  provider: string;
+  base_url: string;
+  api_key: string;
+  model: string;
+  temperature: number;
+}
 
 // ========== Member Management ==========
 
@@ -182,176 +192,140 @@ function MemberSection() {
   );
 }
 
-// ========== Account Migration ==========
+// ========== AI Config ==========
 
-interface MigrationPreview {
-  account: Account;
-  oldPath: string;
-  newPath: string;
-}
-
-function MigrationSection() {
-  const [members, setMembers] = useState<Member[]>([]);
-  const [accounts, setAccounts] = useState<Account[]>([]);
-  const [selectedMember, setSelectedMember] = useState("");
-  const [previews, setPreviews] = useState<MigrationPreview[]>([]);
-  const [migrating, setMigrating] = useState(false);
-  const [migrateConfirmOpen, setMigrateConfirmOpen] = useState(false);
+function AIConfigSection() {
+  const [config, setConfig] = useState<AIConfig>({
+    enabled: false,
+    provider: "openai",
+    base_url: "",
+    api_key: "",
+    model: "",
+    temperature: 0.3,
+  });
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
 
   useEffect(() => {
-    Promise.all([
-      fetch("/api/members").then((r) => r.json()),
-      fetch("/api/accounts").then((r) => r.json()),
-    ]).then(([m, a]) => {
-      setMembers(m);
-      setAccounts(a);
-    });
+    fetch("/api/ai/config")
+      .then((r) => r.json())
+      .then(setConfig)
+      .finally(() => setLoading(false));
   }, []);
 
-  // Account types that need member prefix
-  const MEMBER_TYPES = ["Assets", "Liabilities"];
-
-  function generatePreview(memberId: string) {
-    const member = members.find((m) => m.id === memberId);
-    if (!member) {
-      setPreviews([]);
-      return;
-    }
-
-    // Preview account migrations
-    const accountPreviews: MigrationPreview[] = [];
-    for (const acc of accounts) {
-      if (!MEMBER_TYPES.includes(acc.type)) continue;
-      // Skip if already has member prefix
-      const parts = acc.path.split(":");
-      if (parts.length >= 2 && members.some((m) => m.name === parts[1]))
-        continue;
-
-      const newPath = `${parts[0]}:${member.name}:${parts.slice(1).join(":")}`;
-      accountPreviews.push({ account: acc, oldPath: acc.path, newPath });
-    }
-    setPreviews(accountPreviews);
-  }
-
-  function handleMemberChange(memberId: string) {
-    setSelectedMember(memberId);
-    generatePreview(memberId);
-  }
-
-  async function handleMigrate() {
-    if (previews.length === 0) return;
-    setMigrating(true);
+  async function handleSave() {
+    setSaving(true);
     try {
-      for (const p of previews) {
-        await fetch("/api/accounts", {
-          method: "PUT",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ id: p.account.id, path: p.newPath }),
-        });
+      const res = await fetch("/api/ai/config", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(config),
+      });
+      if (res.ok) {
+        toast.success("AI 配置已保存");
+      } else {
+        const data = await res.json();
+        toast.error(data.error || "保存失败");
       }
-
-      toast.success("迁移完成");
-      const a = await fetch("/api/accounts").then((r) => r.json());
-      setAccounts(a);
-      setPreviews([]);
-      setSelectedMember("");
     } catch {
-      toast.error("迁移失败");
+      toast.error("保存失败");
     } finally {
-      setMigrating(false);
+      setSaving(false);
     }
+  }
+
+  if (loading) {
+    return (
+      <Card>
+        <CardHeader>
+          <CardTitle className="text-lg">AI 配置</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <p className="text-sm text-muted-foreground">加载中...</p>
+        </CardContent>
+      </Card>
+    );
   }
 
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="text-lg">账户迁移工具</CardTitle>
-        <CardDescription>
-          将现有 Assets / Liabilities 账户路径添加成员前缀（如 Assets:Alipay →
-          Assets:Shawn:Alipay）
-        </CardDescription>
+        <div className="flex items-center justify-between">
+          <div>
+            <CardTitle className="text-lg">AI 配置</CardTitle>
+            <CardDescription>
+              配置 AI 接口用于智能分类和解析
+            </CardDescription>
+          </div>
+          <Switch
+            checked={config.enabled}
+            onCheckedChange={(checked) =>
+              setConfig({ ...config, enabled: checked })
+            }
+          />
+        </div>
       </CardHeader>
       <CardContent className="space-y-4">
-        {members.length === 0 ? (
-          <p className="text-sm text-muted-foreground">请先添加家庭成员</p>
-        ) : (
-          <>
-            <div className="space-y-2">
-              <Label>选择归属成员</Label>
-              <div className="flex gap-2">
-                {members.map((m) => (
-                  <Button
-                    key={m.id}
-                    variant={selectedMember === m.id ? "default" : "outline"}
-                    size="sm"
-                    onClick={() => handleMemberChange(m.id)}
-                  >
-                    {m.name}
-                  </Button>
-                ))}
-              </div>
-            </div>
-
-            {selectedMember && (
-              <>
-                {previews.length === 0 ? (
-                  <p className="text-sm text-muted-foreground">
-                    没有需要迁移的账户
-                  </p>
-                ) : (
-                  <>
-                    <div className="space-y-2">
-                      <h4 className="text-sm font-medium">
-                        账户路径变更预览 ({previews.length})
-                      </h4>
-                      <Table>
-                        <TableHeader>
-                          <TableRow>
-                            <TableHead>账户名称</TableHead>
-                            <TableHead>当前路径</TableHead>
-                            <TableHead>→</TableHead>
-                            <TableHead>迁移后路径</TableHead>
-                          </TableRow>
-                        </TableHeader>
-                        <TableBody>
-                          {previews.map((p) => (
-                            <TableRow key={p.account.id}>
-                              <TableCell>{p.account.name}</TableCell>
-                              <TableCell className="font-mono text-xs text-muted-foreground">
-                                {p.oldPath}
-                              </TableCell>
-                              <TableCell>→</TableCell>
-                              <TableCell className="font-mono text-xs">
-                                {p.newPath}
-                              </TableCell>
-                            </TableRow>
-                          ))}
-                        </TableBody>
-                      </Table>
-                    </div>
-                    <Button
-                      onClick={() => setMigrateConfirmOpen(true)}
-                      disabled={migrating}
-                    >
-                      {migrating
-                        ? "迁移中..."
-                        : `执行迁移（${previews.length} 项）`}
-                    </Button>
-                    <ConfirmDialog
-                      open={migrateConfirmOpen}
-                      onOpenChange={setMigrateConfirmOpen}
-                      title="确认迁移"
-                      description={`确认将 ${previews.length} 个账户迁移到 ${members.find((m) => m.id === selectedMember)?.name} 名下？`}
-                      confirmLabel="确认迁移"
-                      variant="default"
-                      onConfirm={handleMigrate}
-                    />{" "}
-                  </>
-                )}
-              </>
-            )}
-          </>
-        )}
+        <div className="grid gap-4 md:grid-cols-2">
+          <div className="space-y-2">
+            <Label>Provider</Label>
+            <Input
+              placeholder="openai"
+              value={config.provider}
+              onChange={(e) =>
+                setConfig({ ...config, provider: e.target.value })
+              }
+            />
+          </div>
+          <div className="space-y-2">
+            <Label>Model</Label>
+            <Input
+              placeholder="gpt-4o-mini"
+              value={config.model}
+              onChange={(e) => setConfig({ ...config, model: e.target.value })}
+            />
+          </div>
+        </div>
+        <div className="space-y-2">
+          <Label>Base URL</Label>
+          <Input
+            placeholder="https://api.openai.com/v1"
+            value={config.base_url}
+            onChange={(e) =>
+              setConfig({ ...config, base_url: e.target.value })
+            }
+          />
+        </div>
+        <div className="space-y-2">
+          <Label>API Key</Label>
+          <Input
+            type="password"
+            placeholder="sk-..."
+            value={config.api_key}
+            onChange={(e) =>
+              setConfig({ ...config, api_key: e.target.value })
+            }
+          />
+        </div>
+        <div className="space-y-2">
+          <Label>Temperature ({config.temperature})</Label>
+          <Input
+            type="number"
+            min={0}
+            max={2}
+            step={0.1}
+            value={config.temperature}
+            onChange={(e) =>
+              setConfig({
+                ...config,
+                temperature: parseFloat(e.target.value) || 0.3,
+              })
+            }
+          />
+        </div>
+        <Button onClick={handleSave} disabled={saving}>
+          {saving ? "保存中..." : "保存配置"}
+        </Button>
       </CardContent>
     </Card>
   );
@@ -371,7 +345,7 @@ export default function SettingsPage() {
 
       <Separator />
 
-      <MigrationSection />
+      <AIConfigSection />
     </div>
   );
 }

@@ -1,6 +1,6 @@
 import { promises as fs } from 'fs'
 import path from 'path'
-import type { Account, AccountRule, Member, AppData } from '@/types'
+import type { Account, AccountRule, SkipRule, Member, AppData } from '@/types'
 
 const DATA_DIR = path.join(process.cwd(), 'data')
 
@@ -72,13 +72,40 @@ export async function getAIConfig() {
   })
 }
 
+export interface AIConfig {
+  enabled: boolean
+  provider: string
+  base_url: string
+  api_key: string
+  model: string
+  temperature: number
+}
+
+export async function saveAIConfig(config: AIConfig): Promise<void> {
+  const configPath = path.join(process.cwd(), 'config', 'ai.json')
+  await writeJSON(configPath, config)
+}
+
+// ========== Skip Rules ==========
+
+const skipRulesPath = path.join(DATA_DIR, 'skip-rules.json')
+
+export async function getSkipRules(): Promise<SkipRule[]> {
+  return readJSON<SkipRule[]>(skipRulesPath, [])
+}
+
+export async function saveSkipRules(rules: SkipRule[]): Promise<void> {
+  await writeJSON(skipRulesPath, rules)
+}
+
 // ========== Bulk ==========
 
 export async function getAppData(): Promise<AppData> {
-  const [accounts, rules, members] = await Promise.all([
+  const [accounts, rules, skipRules, members] = await Promise.all([
     getAccounts(),
     getRules(),
+    getSkipRules(),
     getMembers(),
   ])
-  return { accounts, rules, members }
+  return { accounts, rules, skipRules, members }
 }

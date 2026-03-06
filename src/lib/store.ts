@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import type { Transaction, Account, AccountRule, Member } from "@/types";
+import type { Transaction, Account, AccountRule, SkipRule, Member } from "@/types";
 
 interface AppStore {
   // Transactions
@@ -21,6 +21,10 @@ interface AppStore {
   // Unified Rules (replaces old classification rules + payment method mappings)
   rules: AccountRule[];
   setRules: (rules: AccountRule[]) => void;
+
+  // Skip Rules
+  skipRules: SkipRule[];
+  setSkipRules: (rules: SkipRule[]) => void;
 
   // Members
   members: Member[];
@@ -56,6 +60,9 @@ export const useStore = create<AppStore>((set) => ({
 
   rules: [],
   setRules: (rules) => set({ rules }),
+
+  skipRules: [],
+  setSkipRules: (skipRules) => set({ skipRules }),
 
   members: [],
   setMembers: (members) => set({ members }),

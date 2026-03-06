@@ -41,6 +41,13 @@ export interface Transaction {
   skipReason?: string
   manualOverride?: boolean       // User manually assigned accounts, rule engine won't override
 
+  // Exclude from income/expense stats
+  excludeFromStats?: boolean
+
+  // Duplicate detection
+  duplicateOf?: string           // ID of the original transaction if this is a duplicate
+  possibleDuplicates?: string[]  // IDs of transactions that might be duplicates
+
   // Family / period
   memberId?: string
   period?: string // YYYY-MM
@@ -119,6 +126,28 @@ export interface AccountRule {
   // Account
   account: string            // Account path template, e.g. "Assets:{member}:CMB:Savings:1526"
   accountDisplayName: string // Display name, e.g. "招商储蓄卡 1526"
+
+  // Exclude from income/expense stats
+  excludeFromStats?: boolean
+}
+
+// ========== SkipRule ==========
+
+export interface SkipRule {
+  id: string
+  name: string
+  priority: number           // Higher = matched first
+  enabled: boolean
+  source: RuleCreator
+
+  // Member scope
+  member?: string            // If unset, applies to all members
+
+  // Match conditions
+  match: ConditionGroup
+
+  // Skip reason displayed to user
+  reason: string             // e.g. "内部转账", "退款", "不计收支"
 }
 
 // ========== Rule Slot IDs ==========
@@ -176,6 +205,7 @@ export interface AIClassifyResult {
 export interface AppData {
   accounts: Account[]
   rules: AccountRule[]
+  skipRules: SkipRule[]
   members: Member[]
 }
 

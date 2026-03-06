@@ -2,6 +2,7 @@ import type {
   Transaction,
   TransactionDirection,
   AccountRule,
+  SkipRule,
   ConditionGroup,
   MatchCondition,
   Member,
@@ -189,7 +190,7 @@ function matchSlot(
   txType: TransactionDirection,
   side: RuleSide,
   members: Member[]
-): { account?: string; ruleId?: string } {
+): { account?: string; ruleId?: string; excludeFromStats?: boolean } {
   // Step 3: Filter rules for this slot
   const slotRules = rules.filter(r => {
     if (!r.enabled) return false
@@ -205,11 +206,43 @@ function matchSlot(
   // Step 5: Match rules
   for (const rule of slotRules) {
     if (evaluateGroup(tx, rule.match)) {
-      return { account: rule.account, ruleId: rule.id }
+      return { account: rule.account, ruleId: rule.id, excludeFromStats: rule.excludeFromStats }
     }
   }
 
   return {}
+}
+
+/**
+ * Apply skip rules to mark transactions that should be excluded.
+ */
+export function applySkipRules(
+  transactions: Transaction[],
+  skipRules: SkipRule[]
+): Transaction[] {
+  if (!skipRules || skipRules.length === 0) return transactions
+
+  // Sort by priority descending
+  const sorted = [...skipRules]
+    .filter(r => r.enabled)
+    .sort((a, b) => b.priority - a.priority)
+
+  return transactions.map(tx => {
+    // Already has skip reason (manual or higher priority rule)
+    if (tx.skipReason) return tx
+
+    // Find first matching skip rule
+    for (const rule of sorted) {
+      // Member filter
+      if (rule.member && rule.member !== tx.memberId) continue
+
+      if (evaluateGroup(tx, rule.match)) {
+        return { ...tx, skipReason: rule.reason }
+      }
+    }
+
+    return tx
+  })
 }
 
 /**
@@ -219,11 +252,15 @@ function matchSlot(
 export function applyRules(
   transactions: Transaction[],
   rules: AccountRule[],
-  members: Member[] = []
+  members: Member[] = [],
+  skipRules: SkipRule[] = []
 ): Transaction[] {
-  return transactions.map(tx => {
-    // Skip manual overrides
-    if (tx.manualOverride) return tx
+  // Step 0: Apply skip rules first
+  const txsWithSkips = applySkipRules(transactions, skipRules)
+
+  return txsWithSkips.map(tx => {
+    // Skip manual overrides and skipped transactions
+    if (tx.manualOverride || tx.skipReason) return tx
 
     const result: Transaction = { ...tx, warnings: [] }
 
@@ -251,6 +288,10 @@ export function applyRules(
       result.matchedDebitRuleId = debitMatch.ruleId
     } else {
       result.debitAccount = undefined
+    }
+
+    if (creditMatch.excludeFromStats || debitMatch.excludeFromStats) {
+      result.excludeFromStats = true
     }
 
     // Step 6: Validate account types

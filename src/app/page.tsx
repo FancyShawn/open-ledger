@@ -21,10 +21,10 @@ export default function HomePage() {
 
   const totalTx = transactions.length;
   const totalExpense = transactions
-    .filter((t) => t.direction === "expense")
+    .filter((t) => t.direction === "expense" && !t.excludeFromStats)
     .reduce((s, t) => s + t.amount, 0);
   const totalIncome = transactions
-    .filter((t) => t.direction === "income")
+    .filter((t) => t.direction === "income" && !t.excludeFromStats)
     .reduce((s, t) => s + t.amount, 0);
   const unmapped = transactions.filter(
     (t) => !t.creditAccount || !t.debitAccount,

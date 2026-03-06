@@ -124,6 +124,57 @@ function sourceIcon(source: string) {
   return map[source] || source;
 }
 
+interface DuplicateMatch {
+  id: string;
+  txA: Transaction;
+  txB: Transaction;
+}
+
+function normalizeCounterparty(str: string): string {
+  return str
+    .toLowerCase()
+    .replace(/[\s\-_.·]/g, '')
+    .replace(/七鲜|7fresh|7FRESH/gi, '七鲜')
+    .replace(/京东/gi, '京东')
+    .trim();
+}
+
+function detectDuplicates(txs: Transaction[]): DuplicateMatch[] {
+  const matches: DuplicateMatch[] = [];
+  const processed = new Set<string>();
+
+  for (let i = 0; i < txs.length; i++) {
+    for (let j = i + 1; j < txs.length; j++) {
+      const a = txs[i];
+      const b = txs[j];
+      const key = [a.id, b.id].sort().join('-');
+      if (processed.has(key)) continue;
+
+      if (a.source === b.source) continue;
+      if (a.direction !== b.direction) continue;
+      if (a.amount !== b.amount) continue;
+
+      const dateA = a.date.substring(0, 10);
+      const dateB = b.date.substring(0, 10);
+      if (dateA !== dateB) continue;
+
+      const cpA = normalizeCounterparty(a.counterparty);
+      const cpB = normalizeCounterparty(b.counterparty);
+      if (!cpA || !cpB) continue;
+      if (cpA !== cpB && !cpA.includes(cpB) && !cpB.includes(cpA)) continue;
+
+      processed.add(key);
+      matches.push({
+        id: crypto.randomUUID(),
+        txA: a,
+        txB: b,
+      });
+    }
+  }
+
+  return matches;
+}
+
 export default function UploadPage() {
   const router = useRouter();
   const {
@@ -134,6 +185,8 @@ export default function UploadPage() {
     setAccounts,
     rules,
     setRules,
+    skipRules,
+    setSkipRules,
     draftTransactions,
     setDraftTransactions,
     clearDraftTransactions,
@@ -177,6 +230,10 @@ export default function UploadPage() {
     "active",
   );
 
+  // Duplicate detection
+  const [duplicateMatches, setDuplicateMatches] = useState<DuplicateMatch[]>([]);
+  const [resolvingDuplicate, setResolvingDuplicate] = useState<DuplicateMatch | null>(null);
+
   // Multi-file upload
   const [members, setMembers] = useState<Member[]>([]);
   const [stagedFiles, setStagedFiles] = useState<StagedFile[]>([]);
@@ -193,7 +250,10 @@ export default function UploadPage() {
     fetch("/api/rules")
       .then((r) => r.json())
       .then(setRules);
-  }, [setAccounts, setRules]);
+    fetch("/api/skip-rules")
+      .then((r) => r.json())
+      .then(setSkipRules);
+  }, [setAccounts, setRules, setSkipRules]);
 
   const ruleMap = useMemo(() => {
     const map = new Map<string, AccountRule>();
@@ -406,7 +466,16 @@ export default function UploadPage() {
         source,
         meta: { totalCount: allTransactions.length },
       });
-      setWorkingTxs(allTransactions);
+      // Apply skip rules and account rules after parsing
+      const processedTxs = applyRules(allTransactions, rules, members, skipRules);
+      setWorkingTxs(processedTxs);
+
+      const duplicates = detectDuplicates(allTransactions);
+      setDuplicateMatches(duplicates);
+      if (duplicates.length > 0) {
+        setResolvingDuplicate(duplicates[0]);
+      }
+
       toast.success(
         `解析完成：${allTransactions.length} 笔交易，来自 ${stagedFiles.length} 个文件`,
       );
@@ -547,7 +616,7 @@ export default function UploadPage() {
             }
           : tx,
       );
-      return applyRules(updated, rules, members);
+      return applyRules(updated, rules, members, skipRules);
     });
     setDetailTx((prev) => (prev ? { ...prev, direction: newDirection } : null));
   }
@@ -1131,12 +1200,7 @@ export default function UploadPage() {
                               </TableCell>
                             )}
                             <TableCell>
-                              <DirectionBadge
-                                direction={tx.direction}
-                                onChange={(newDir) =>
-                                  updateTxDirection(tx.id, newDir)
-                                }
-                              />
+                              <DirectionBadge direction={tx.direction} />
                             </TableCell>
                             <TableCell className="text-xs text-muted-foreground">
                               <Tooltip>
@@ -1211,6 +1275,7 @@ export default function UploadPage() {
                                   value={tx.creditAccount}
                                   label={labels.credit}
                                   accounts={accounts}
+                                  members={members}
                                   onChange={(v) =>
                                     updateTxCreditAccount(tx.id, v)
                                   }
@@ -1238,6 +1303,7 @@ export default function UploadPage() {
                                   value={tx.debitAccount}
                                   label={labels.debit}
                                   accounts={accounts}
+                                  members={members}
                                   onChange={(v) =>
                                     updateTxDebitAccount(tx.id, v)
                                   }
@@ -1622,6 +1688,91 @@ export default function UploadPage() {
             </SheetFooter>
           </SheetContent>
         </Sheet>
+
+        <Dialog
+          open={!!resolvingDuplicate}
+          onOpenChange={(open) => {
+            if (!open) {
+              setResolvingDuplicate(null);
+              setDuplicateMatches([]);
+            }
+          }}
+        >
+          <DialogContent className="max-w-lg">
+            <DialogHeader>
+              <DialogTitle>发现重复交易</DialogTitle>
+              <DialogDescription>
+                以下两条交易记录可能为同一笔，请选择保留哪一条
+              </DialogDescription>
+            </DialogHeader>
+            <div className="space-y-3 py-4">
+              {resolvingDuplicate && [
+                { tx: resolvingDuplicate.txA, label: "A" },
+                { tx: resolvingDuplicate.txB, label: "B" },
+              ].map(({ tx, label }) => (
+                <div
+                  key={tx.id}
+                  className="p-3 rounded-lg border-2 border-amber-400 bg-amber-50 cursor-pointer transition-colors hover:border-primary"
+                  onClick={() => {
+                    const toRemove =
+                      label === "A"
+                        ? resolvingDuplicate.txB
+                        : resolvingDuplicate.txA;
+                    setWorkingTxs((prev) =>
+                      prev.filter((t) => t.id !== toRemove.id),
+                    );
+                    const remaining = duplicateMatches.slice(1);
+                    setDuplicateMatches(remaining);
+                    if (remaining.length > 0) {
+                      setResolvingDuplicate(remaining[0]);
+                    } else {
+                      setResolvingDuplicate(null);
+                    }
+                    toast.success(`已保留 ${sourceIcon(tx.source)} 的记录`);
+                  }}
+                >
+                  <div className="flex items-center justify-between mb-1">
+                    <Badge variant="outline">{sourceIcon(tx.source)}</Badge>
+                    <span className="font-medium">
+                      {tx.direction === "expense" ? "-" : "+"}
+                      {tx.amount.toFixed(2)}
+                    </span>
+                  </div>
+                  <p className="font-medium">{tx.counterparty}</p>
+                  <p className="text-sm text-muted-foreground">
+                    {tx.date.substring(0, 10)} · {tx.paymentMethod}
+                  </p>
+                  {tx.creditAccount && (
+                    <p className="text-xs text-muted-foreground mt-1">
+                      支付账户: {tx.creditAccount}
+                    </p>
+                  )}
+                </div>
+              ))}
+            </div>
+            <DialogFooter className="flex-row justify-between">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => {
+                  const remaining = duplicateMatches.slice(1);
+                  setDuplicateMatches(remaining);
+                  if (remaining.length > 0) {
+                    setResolvingDuplicate(remaining[0]);
+                  } else {
+                    setResolvingDuplicate(null);
+                  }
+                  toast.info("已跳过此配对");
+                }}
+              >
+                跳过
+              </Button>
+              <span className="text-xs text-muted-foreground">
+                剩余 {duplicateMatches.length - 1} 组重复
+              </span>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
       </div>
     </TooltipProvider>
   );
@@ -1657,13 +1808,7 @@ function MiniStatCard({
   );
 }
 
-function DirectionBadge({
-  direction,
-  onChange,
-}: {
-  direction: TransactionDirection;
-  onChange?: (newDirection: TransactionDirection) => void;
-}) {
+function DirectionBadge({ direction }: { direction: TransactionDirection }) {
   const map: Record<TransactionDirection, { label: string; className: string }> = {
     expense: {
       label: "支出",
@@ -1678,18 +1823,8 @@ function DirectionBadge({
   };
   const config = map[direction] || { label: direction, className: "" };
 
-  const handleClick = () => {
-    if (!onChange) return;
-    // Toggle between income and expense
-    onChange(direction === "expense" ? "income" : "expense");
-  };
-
   return (
-    <Badge
-      variant="secondary"
-      className={`text-[10px] font-normal cursor-pointer ${config.className} hover:opacity-80 ${onChange ? 'ring-1 ring-transparent hover:ring-current' : ''}`}
-      onClick={handleClick}
-    >
+    <Badge variant="secondary" className={`text-[10px] font-normal ${config.className}`}>
       {config.label}
     </Badge>
   );
@@ -1740,6 +1875,7 @@ function AccountSelector({
   value,
   label,
   accounts,
+  members,
   onChange,
   onCreateNew,
   onCreateMissingAccount,
@@ -1747,6 +1883,7 @@ function AccountSelector({
   value?: string;
   label: string;
   accounts: Account[];
+  members: Member[];
   onChange: (value: string) => void;
   onCreateNew: (callback: (path: string) => void) => void;
   onCreateMissingAccount?: (path: string) => void;
@@ -1759,10 +1896,28 @@ function AccountSelector({
   // Find the matching account to show its Chinese name
   const matchedAccount = accounts.find((a) => a.path === value);
 
+  // Extract member from path for display
+  const memberNames = useMemo(() => members.map(m => m.name), [members]);
+  const MEMBER_TYPES = ["Assets", "Liabilities"];
+  
+  function getMemberFromPath(path: string, type: string): string | null {
+    if (!MEMBER_TYPES.includes(type)) return null;
+    const parts = path.split(":");
+    if (parts.length >= 3) {
+      const potentialMember = parts[1];
+      if (memberNames.includes(potentialMember)) {
+        return potentialMember;
+      }
+    }
+    return null;
+  }
+
   let displayValue = "未分类";
+  let displayMember: string | null = null;
   if (!isUnmapped && value) {
     if (matchedAccount?.name) {
       displayValue = matchedAccount.name;
+      displayMember = getMemberFromPath(value, matchedAccount.type);
     } else {
       const parts = value.split(":");
       displayValue = parts[parts.length - 1];
@@ -1815,6 +1970,9 @@ function AccountSelector({
           }`}
           title={isMissingAccount ? `账户 ${value} 不存在，点击创建` : label}
         >
+          {displayMember && (
+            <span className="text-muted-foreground mr-1">{displayMember}</span>
+          )}
           {displayValue}
           {isMissingAccount && (
             <AlertCircle className="ml-0.5 h-3 w-3 shrink-0" />
@@ -1859,26 +2017,34 @@ function AccountSelector({
               <p className="px-2 py-1 text-[10px] font-medium text-muted-foreground uppercase tracking-wider">
                 {typeLabels[typeName] || typeName}
               </p>
-              {accs.map((a) => (
-                <button
-                  key={a.id}
-                  className={`w-full text-left px-2 py-1.5 text-sm rounded-md flex items-center justify-between transition-colors ${
-                    value === a.path
-                      ? "bg-primary/10 text-primary"
-                      : "hover:bg-muted"
-                  }`}
-                  onClick={() => {
-                    onChange(a.path);
-                    setOpen(false);
-                    setSearch("");
-                  }}
-                >
-                  <span className="truncate">{a.name}</span>
-                  {value === a.path && (
-                    <Check className="h-3.5 w-3.5 flex-shrink-0" />
-                  )}
-                </button>
-              ))}
+              {accs.map((a) => {
+                const accMember = getMemberFromPath(a.path, a.type);
+                return (
+                  <button
+                    key={a.id}
+                    className={`w-full text-left px-2 py-1.5 text-sm rounded-md flex items-center justify-between transition-colors ${
+                      value === a.path
+                        ? "bg-primary/10 text-primary"
+                        : "hover:bg-muted"
+                    }`}
+                    onClick={() => {
+                      onChange(a.path);
+                      setOpen(false);
+                      setSearch("");
+                    }}
+                  >
+                    <span className="truncate flex items-center gap-1.5">
+                      {accMember && (
+                        <span className="text-[10px] text-muted-foreground bg-muted px-1 rounded">{accMember}</span>
+                      )}
+                      {a.name}
+                    </span>
+                    {value === a.path && (
+                      <Check className="h-3.5 w-3.5 flex-shrink-0" />
+                    )}
+                  </button>
+                );
+              })}
             </div>
           ))}
           {filteredAccounts.length === 0 && (
